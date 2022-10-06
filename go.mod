@@ -1,4 +1,4 @@
-module platform-service-library
+module github.com/beautiful-store/platform-service-library
 
 go 1.16
 
