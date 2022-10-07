@@ -1,6 +1,8 @@
 package aws
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestIsEmailFormat(t *testing.T) {
 	topic := "topic"
