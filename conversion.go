@@ -11,25 +11,26 @@ import (
 func Struct2Json(s interface{}) (string, error) {
 	if s == nil {
 		return "", nil
-	} else {
-		if e, err := json.Marshal(s); err != nil {
-			return "", err
-		} else {
-			return string(e), nil
-		}
 	}
+
+	e, err := json.Marshal(s)
+	if err != nil {
+		return "", err
+	}
+
+	return string(e), nil
 }
 
 func Struct2Byte(s interface{}) ([]byte, error) {
 	if s == nil {
 		return nil, nil
-	} else {
-		if e, err := json.Marshal(s); err != nil {
-			return nil, err
-		} else {
-			return e, nil
-		}
 	}
+
+	e, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	return e, nil
 }
 
 func Struct2Map(s interface{}) (map[string]interface{}, error) {
@@ -37,16 +38,18 @@ func Struct2Map(s interface{}) (map[string]interface{}, error) {
 
 	if s == nil {
 		return data, nil
-	} else {
-		if e, err := json.Marshal(s); err != nil {
-			return nil, err
-		} else {
-			if err = json.Unmarshal(e, &data); err != nil {
-				return nil, err
-			}
-			return data, nil
-		}
 	}
+
+	e, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(e, &data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func Int64ArrayToString(list []int64, delim string) string {
@@ -64,7 +67,7 @@ func Int64ArrayToString(list []int64, delim string) string {
 
 func StringToInt64Array(ids string, delim string) ([]int64, error) {
 	if ids == "" {
-		return nil, errors.New("ids의 값을 찾을수가 없습니다.")
+		return nil, errors.New("can't find the paaramter")
 	}
 	if delim == "" {
 		delim = ","
@@ -76,7 +79,7 @@ func StringToInt64Array(ids string, delim string) ([]int64, error) {
 	int64IDs := make([]int64, len(stringIDs))
 	for i, val := range stringIDs {
 		if int64IDs[i], err = strconv.ParseInt(val, 10, 64); err != nil {
-			return nil, errors.New("ids의 값을 찾을수가 없습니다.")
+			return nil, errors.New("can't find the paaramter")
 		}
 	}
 

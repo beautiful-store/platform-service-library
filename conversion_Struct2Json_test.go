@@ -2,8 +2,6 @@ package library
 
 import (
 	"testing"
-
-	"github.com/mailru/easyjson"
 )
 
 func TestStruct2Json(t *testing.T) {
@@ -28,53 +26,53 @@ func TestStruct2Json(t *testing.T) {
 	}
 }
 
-func Struct2Json1(s interface{}) {
-	Struct2Json(s)
-}
+// func Struct2Json1(s interface{}) {
+// 	Struct2Json(s)
+// }
 
-func Struct2Json2(s interface{}) {
-	f := func(v interface{}) (string, error) {
-		if v == nil {
-			return "", nil
-		} else {
-			if e, err := easyjson.Marshal(v.(easyjson.Marshaler)); err != nil {
-				return "", err
-			} else {
-				return string(e), nil
-			}
-		}
-	}
+// func Struct2Json2(s interface{}) {
+// 	f := func(v interface{}) (string, error) {
+// 		if v == nil {
+// 			return "", nil
+// 		} else {
+// 			if e, err := easyjson.Marshal(v.(easyjson.Marshaler)); err != nil {
+// 				return "", err
+// 			} else {
+// 				return string(e), nil
+// 			}
+// 		}
+// 	}
 
-	f(s)
-}
+// 	f(s)
+// }
 
-func BenchmarkStruct2Json1(b *testing.B) {
-	v1 := &(struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	}{
-		ID:   1,
-		Name: "홍길동",
-	})
+// func BenchmarkStruct2Json1(b *testing.B) {
+// 	v1 := &(struct {
+// 		ID   int    `json:"id"`
+// 		Name string `json:"name"`
+// 	}{
+// 		ID:   1,
+// 		Name: "홍길동",
+// 	})
 
-	for i := 0; i < b.N; i++ {
-		Struct2Json1(v1)
-	}
-}
+// 	for i := 0; i < b.N; i++ {
+// 		Struct2Json1(v1)
+// 	}
+// }
 
-func BenchmarkStruct2Json2(b *testing.B) {
-	v1 := &(struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	}{
-		ID:   1,
-		Name: "홍길동",
-	})
+// func BenchmarkStruct2Json2(b *testing.B) {
+// 	v1 := &(struct {
+// 		ID   int    `json:"id"`
+// 		Name string `json:"name"`
+// 	}{
+// 		ID:   1,
+// 		Name: "홍길동",
+// 	})
 
-	for i := 0; i < b.N; i++ {
-		Struct2Json1(v1)
-	}
-}
+// 	for i := 0; i < b.N; i++ {
+// 		Struct2Json1(v1)
+// 	}
+// }
 
 // go test -bench=.
 // go test -bench=. -benchmem

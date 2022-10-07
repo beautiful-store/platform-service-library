@@ -7,8 +7,7 @@ import (
 	"testing"
 )
 
-//go test -cover
-
+// go test -cover
 func TestStruct2Byte(t *testing.T) {
 	v1 := &struct {
 		ID   int    `json:"id"`
@@ -85,7 +84,7 @@ func TestByte2Struct(t *testing.T) {
 		Name: "홍길동",
 	}
 
-	b, err := json.Marshal(v1)
+	b, _ := json.Marshal(v1)
 
 	result, err := Byte2Struct(b)
 
@@ -113,7 +112,7 @@ func TestMap2Struct(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	if v1["name"] != (*s).Name {
-		t.Errorf("expected : %v but get : %v", v1["name"], (*s).Name)
+	if v1["name"] != s.Name {
+		t.Errorf("expected : %v but get : %v", v1["name"], s.Name)
 	}
 }
