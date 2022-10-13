@@ -1,3 +1,12 @@
 package logging
 
-const json_origin = `{"module_name":"SharingService","time_unix_nano":1665472014651177000,"timestamp":"2022-10-11T16:06:54+09:00","service_id":"JEQdURVF4qw9N5Uh949wt0LilHP0rKxN","parent_service_id":"","parent_service_name":"","remote_ip":"::1","uri":"/api/admin/donations/statuses","host":"localhost:7000","method":"GET","path":"/api/admin/donations/statuses","referer":"","user_agent":"PostmanRuntime/7.29.2","bytes_in":298,"bytes_out":691,"header":"","query":"{}","form":"{\"donorName\":\"권미숙\",\"donorMobile\":\"01024487860\",\"donorPostNo\":\"04078\",\"donorAddress\":\"서울특별시 마포구 독막로 134-7(창전동)\", \"takeOverMethodType\":\"POSTBOX\", \"donationPlaceType\":\"CENTER\",\"CourierId\":1,\"campaignId\":68,\"donorAddressDetail\":\"1\",\"agree\":true,\"marketingAgree\":false}","status":200,"panic":false,"error":"","body":"","stack_trace":"{\"file\":\"/Users/chaos/go/sharing-platform-service/controller/donation_admin_controller.go:225\",\"func\":\"sharing-platform-service/controller.DonationAdminController.GetStatuses\",\"level\":\"trace\",\"msg\":\"\",\"time\":\"2022-10-11T16:06:54+09:00\",\"type\":\"trace\"}\n,{\"file\":\"/Users/chaos/go/sharing-platform-service/donation/service/status_service.go:28\",\"func\":\"sharing-platform-service/donation/service.statusService.GetStatuses\",\"level\":\"trace\",\"msg\":\"\",\"time\":\"2022-10-11T16:06:54+09:00\",\"type\":\"trace\"}\n","latency":20,"member_id":19,"member_orgid":0,"member_name":""}`
+import (
+	lib "github.com/beautiful-store/platform-service-library"
+)
+
+func DecodeLogMessage(message string) *Log {
+	c := logContext{}
+	lib.String2Struct(message, &c)
+
+	return &Log{Context: &c}
+}
