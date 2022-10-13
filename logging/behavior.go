@@ -2,19 +2,19 @@ package logging
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net"
 	"net/http/httputil"
-	"os"
 	"strconv"
 
 	"strings"
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/sirupsen/logrus"
 
 	lib "github.com/beautiful-store/platform-service-library"
+	aws "github.com/beautiful-store/platform-service-library/aws"
 )
 
 var (
@@ -30,75 +30,58 @@ const (
 )
 
 type Log struct {
-	Stack   *bytes.Buffer
 	Context *logContext
 }
 
 type logContext struct {
-	ModuleName        string `json:"module_name"`
-	TimeUnixNano      int64  `json:"time_unix_nano"`
-	Timestamp         string `json:"timestamp"`
-	ServiceID         string `json:"service_id"`
-	ParentServiceID   string `json:"parent_service_id"`
-	ParentServiceName string `json:"parent_service_name"`
+	Id                int64  `xorm:"id pk autoincr" `
+	ModuleName        string `json:"module_name" xorm:"module_name"`
+	TimeUnixNano      int64  `json:"time_unix_nano" xorm:"time_unix_nano"`
+	Timestamp         string `json:"timestamp" xorm:"timestamp"`
+	ServiceID         string `json:"service_id" xorm:"service_id"`
+	ServiceName       string `json:"service_name" xorm:"service_name"`
+	ParentServiceID   string `json:"parent_service_id" xorm:"parent_service_id"`
+	ParentServiceName string `json:"parent_service_name" xorm:"parent_service_name"`
 
-	RemoteIP  string `json:"remote_ip"`
-	Uri       string `json:"uri"`
-	Host      string `json:"host"`
-	Method    string `json:"method"`
-	Path      string `json:"path"`
-	Referer   string `json:"referer"`
-	UserAgent string `json:"user_agent"`
+	RemoteIP  string `json:"remote_ip" xorm:"remote_ip"`
+	Uri       string `json:"uri" xorm:"uri"`
+	Host      string `json:"host" xorm:"host"`
+	Method    string `json:"method" xorm:"method"`
+	Path      string `json:"path" xorm:"path"`
+	Referer   string `json:"referer" xorm:"referer"`
+	UserAgent string `json:"user_agent" xorm:"user_agent"`
 
-	BytesIn  int64 `json:"bytes_in"`
-	BytesOut int64 `json:"bytes_out"`
+	BytesIn  int64 `json:"bytes_in" xorm:"bytes_in"`
+	BytesOut int64 `json:"bytes_out" xorm:"bytes_out"`
 
-	Header string `json:"header"`
-	Query  string `json:"query"`
-	Form   string `json:"form"`
+	Header string `json:"header" xorm:"header"`
+	Query  string `json:"query" xorm:"query"`
+	Form   string `json:"form" xorm:"form"`
 
-	Status int    `json:"status"`
-	Panic  bool   `json:"panic"`
-	Error  string `json:"error"`
+	Status int    `json:"status" xorm:"status"`
+	Panic  bool   `json:"panic" xorm:"panic"`
+	Error  string `json:"error" xorm:"error"`
 
-	Body       string `json:"body"`
-	StackTrace string `json:"stack_trace"`
+	Body       string `json:"body" xorm:"body"`
+	StackTrace string `json:"stack_trace" xorm:"stack_trace"`
 
-	Latency int64 `json:"latency"`
+	Latency int64 `json:"latency" xorm:"latency"`
 
-	MemberID    int64  `json:"member_id"`
-	MemberOrgID int64  `json:"member_orgid"`
-	MemberName  string `json:"member_name"`
+	MemberID    int64  `json:"member_id" xorm:"member_id"`
+	MemberOrgID int64  `json:"member_orgid" xorm:"member_orgid"`
+	MemberName  string `json:"member_name" xorm:"member_name"`
 
-	StartTime time.Time `json:"-"`
+	StartTime time.Time     `json:"-" xorm:"-"`
+	Stack     *bytes.Buffer `json:"-" xorm:"-"`
 }
 
-func New(moduleName string, options ...func(*Log)) *Log {
-	l := &Log{
+func (*logContext) TableName() string {
+	return "behavior_logs"
+}
+
+func New(moduleName string) *Log {
+	return &Log{
 		Context: newLogContext(moduleName),
-	}
-
-	for _, o := range options {
-		if o != nil {
-			o(l)
-		}
-	}
-
-	return l
-}
-
-func StackTrace(b *bytes.Buffer) func(*Log) {
-	logger := logrus.New()
-
-	mw := io.MultiWriter(os.Stdout, b)
-	logger.SetOutput(mw)
-
-	logger.SetFormatter(&logrus.JSONFormatter{})
-	logger.SetLevel(logrus.TraceLevel)
-	logger.SetReportCaller(true)
-
-	return func(l *Log) {
-		l.Stack = b
 	}
 }
 
@@ -115,6 +98,14 @@ func (l *Log) Begin(c echo.Context) {
 	l.Context.StartTime = time.Now()
 
 	req := c.Request()
+
+	serviceName := "UNKNOWN"
+	for _, r := range c.Echo().Routes() {
+		if r.Method == req.Method && r.Path == c.Path() {
+			serviceName = r.Name
+			break
+		}
+	}
 
 	realIP := req.RemoteAddr
 	if ip := req.Header.Get(HeaderXForwardedFor); ip != "" {
@@ -154,6 +145,8 @@ func (l *Log) Begin(c echo.Context) {
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
 
+	l.Context.ServiceID = c.Response().Header().Get(echo.HeaderXRequestID)
+	l.Context.ServiceName = serviceName
 	l.Context.RemoteIP = realIP
 	l.Context.Uri = req.RequestURI
 	l.Context.Host = req.Host
@@ -179,13 +172,33 @@ func (l *Log) WithMemberName(name string) *Log {
 
 func (l *Log) WithMemberOrgID(orgid int64) *Log {
 	l.Context.MemberOrgID = orgid
+
+	return l
+}
+
+func (l *Log) WithStack(b *bytes.Buffer) *Log {
+	l.Context.Stack = b
+
+	return l
+}
+
+func (l *Log) WithError(message string) *Log {
+	l.Context.Panic = false
+	l.Context.Error = message
+
+	return l
+}
+
+func (l *Log) WithPanic(message string) *Log {
+	l.Context.Panic = true
+	l.Context.Error = message
+
 	return l
 }
 
 func (l *Log) WriteLog(c echo.Context) {
 	res := c.Response()
 	if res != nil {
-		l.Context.ServiceID = res.Header().Get(echo.HeaderXRequestID)
 		l.Context.Status = res.Status
 		l.Context.BytesOut = res.Size
 	}
@@ -193,16 +206,36 @@ func (l *Log) WriteLog(c echo.Context) {
 	// dumpResponse, _ := httputil.DumpResponse(c.Request().Response, true)
 	// l.Body = string(dumpResponse)
 
-	var traces []string
-	for {
-		trace, err := l.Stack.ReadBytes('\n')
-		if err == io.EOF {
-			break
+	if l.Context.Stack != nil {
+		var traces []string
+		for {
+			trace, err := l.Context.Stack.ReadBytes('\n')
+			if err == io.EOF {
+				break
+			}
+			traces = append(traces, string(trace))
 		}
-		traces = append(traces, string(trace))
+		l.Context.StackTrace = strings.Join(traces, ",")
 	}
-	l.Context.StackTrace = strings.Join(traces, ",")
+
 	l.Context.Latency = time.Now().Sub(l.Context.StartTime).Milliseconds()
+}
+
+func (l *Log) OutToConsole() {
+	fmt.Println(l.Context)
+}
+
+func (l *Log) OutToSNS(topic string) error {
+	b, err := lib.Struct2Byte(l.Context)
+	if err != nil {
+		return err
+	}
+	_, err = aws.NewSNS().WithTopic(topic).Send(string(b))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func newLogContext(moduleName string) *logContext {
