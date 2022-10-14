@@ -1,7 +1,6 @@
 package logging
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 
@@ -42,7 +41,7 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 	if affected, err := engine.Insert(l.Context); err != nil {
 		return err
 	} else if affected != 1 {
-		return errors.New(fmt.Sprintf("affected rows can't be %d", affected))
+		return fmt.Errorf(fmt.Sprintf("affected rows can't be %d", affected))
 	}
 
 	return nil

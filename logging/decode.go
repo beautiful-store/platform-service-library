@@ -6,7 +6,9 @@ import (
 
 func DecodeLogMessage(message string) *Log {
 	c := logContext{}
-	lib.String2Struct(message, &c)
+	if err := lib.String2Struct(message, &c); err != nil {
+		panic(err.Error())
+	}
 
 	return &Log{Context: &c}
 }

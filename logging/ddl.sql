@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS `behavior_logs`
 (
   id                  INT           NOT NULL AUTO_INCREMENT,
+  env                 VARCHAR(20)   NOT NULL,
   module_name         VARCHAR(60)   NOT NULL,
   time_unix_nano      BIGINT        NOT NULL,
   timestamp           VARCHAR(60)   NOT NULL,

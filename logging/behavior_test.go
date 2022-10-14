@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	lib "github.com/beautiful-store/platform-service-library"
 	"github.com/labstack/echo"
 )
 
@@ -21,6 +22,7 @@ func TestBehavior(t *testing.T) {
 	log.Begin(c)
 	log.WriteLog(c)
 	log.OutToConsole()
+	t.Log(lib.Struct2Json(log.Context))
 }
 
 func TestBehaviorWithParams(t *testing.T) {
@@ -32,6 +34,7 @@ func TestBehaviorWithParams(t *testing.T) {
 	var b *bytes.Buffer
 
 	log := New("testModule").
+		WithEnv("dev").
 		WithParentService("parentServiceID", "parentServiceName").
 		WithMemberID(int64(1)).WithMemberName("member1").WithMemberOrgID(int64(1)).
 		WithStack(b)
@@ -39,6 +42,7 @@ func TestBehaviorWithParams(t *testing.T) {
 	log.Begin(c)
 	log.WriteLog(c)
 	log.OutToConsole()
+	t.Log(lib.Struct2Json(log.Context))
 }
 
 func TestBehaviorWithError(t *testing.T) {
@@ -50,8 +54,10 @@ func TestBehaviorWithError(t *testing.T) {
 	log := New("testModule")
 
 	log.Begin(c)
-	log.WithError("error message").WriteLog(c)
+	log.SetError("error message")
+	log.WriteLog(c)
 	log.OutToConsole()
+	t.Log(lib.Struct2Json(log.Context))
 }
 func TestBehaviorWithPanic(t *testing.T) {
 	e := echo.New()
@@ -62,8 +68,10 @@ func TestBehaviorWithPanic(t *testing.T) {
 	log := New("testModule")
 
 	log.Begin(c)
-	log.WithPanic("panic message").WriteLog(c)
+	log.SetPanic("panic message")
+	log.WriteLog(c)
 	log.OutToConsole()
+	t.Log(lib.Struct2Json(log.Context))
 }
 func TestBehaviorOutToSNS(t *testing.T) {
 	e := echo.New()
@@ -86,4 +94,5 @@ func TestBehaviorOutToSNS(t *testing.T) {
 		t.Error(err)
 	}
 	log.OutToConsole()
+	t.Log(lib.Struct2Json(log.Context))
 }
