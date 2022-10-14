@@ -2,6 +2,8 @@ package logging
 
 import (
 	"testing"
+
+	lib "github.com/beautiful-store/platform-service-library"
 )
 
 func TestDecodeLogMessage(t *testing.T) {
@@ -10,4 +12,5 @@ func TestDecodeLogMessage(t *testing.T) {
 	log := DecodeLogMessage(json)
 
 	log.OutToConsole()
+	t.Log(lib.Struct2Json(log.Context))
 }

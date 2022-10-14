@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
+// nolint
 type snsPublishAPI interface {
 	Publish(ctx context.Context,
 		params *sns.PublishInput,

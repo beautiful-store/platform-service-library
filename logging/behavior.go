@@ -34,7 +34,8 @@ type Log struct {
 }
 
 type logContext struct {
-	Id                int64  `xorm:"id pk autoincr" `
+	ID                int64  `xorm:"id pk autoincr" json:"-"`
+	Env               string `json:"env" xorm:"env"`
 	ModuleName        string `json:"module_name" xorm:"module_name"`
 	TimeUnixNano      int64  `json:"time_unix_nano" xorm:"time_unix_nano"`
 	Timestamp         string `json:"timestamp" xorm:"timestamp"`
@@ -44,7 +45,7 @@ type logContext struct {
 	ParentServiceName string `json:"parent_service_name" xorm:"parent_service_name"`
 
 	RemoteIP  string `json:"remote_ip" xorm:"remote_ip"`
-	Uri       string `json:"uri" xorm:"uri"`
+	URI       string `json:"uri" xorm:"uri"`
 	Host      string `json:"host" xorm:"host"`
 	Method    string `json:"method" xorm:"method"`
 	Path      string `json:"path" xorm:"path"`
@@ -148,7 +149,7 @@ func (l *Log) Begin(c echo.Context) {
 	l.Context.ServiceID = c.Response().Header().Get(echo.HeaderXRequestID)
 	l.Context.ServiceName = serviceName
 	l.Context.RemoteIP = realIP
-	l.Context.Uri = req.RequestURI
+	l.Context.URI = req.RequestURI
 	l.Context.Host = req.Host
 	l.Context.Method = req.Method
 	l.Context.Path = path
@@ -182,18 +183,20 @@ func (l *Log) WithStack(b *bytes.Buffer) *Log {
 	return l
 }
 
-func (l *Log) WithError(message string) *Log {
-	l.Context.Panic = false
-	l.Context.Error = message
+func (l *Log) WithEnv(env string) *Log {
+	l.Context.Env = env
 
 	return l
 }
 
-func (l *Log) WithPanic(message string) *Log {
+func (l *Log) SetError(message string) {
+	l.Context.Panic = false
+	l.Context.Error = message
+}
+
+func (l *Log) SetPanic(message string) {
 	l.Context.Panic = true
 	l.Context.Error = message
-
-	return l
 }
 
 func (l *Log) WriteLog(c echo.Context) {
@@ -218,7 +221,7 @@ func (l *Log) WriteLog(c echo.Context) {
 		l.Context.StackTrace = strings.Join(traces, ",")
 	}
 
-	l.Context.Latency = time.Now().Sub(l.Context.StartTime).Milliseconds()
+	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
 }
 
 func (l *Log) OutToConsole() {
