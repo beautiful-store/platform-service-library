@@ -44,8 +44,9 @@ func (s *awssns) WithTopic(topic string) *awssns {
 }
 
 func (s *awssns) Send(message string) (*string, error) {
+	fmt.Println("0")
 	var messageID *string
-
+	fmt.Println("1")
 	if s.client == nil {
 		return messageID, errors.New("can't find the client")
 	}
@@ -55,23 +56,26 @@ func (s *awssns) Send(message string) (*string, error) {
 	if len(message) == 0 {
 		return messageID, errors.New("There is no message")
 	}
-
+	fmt.Println("2")
 	msgPtr := flag.String("message", message, "")
+	fmt.Println("3")
 	topicPtr := flag.String("topic", s.topic, "")
+	fmt.Println("4")
 
 	flag.Parse()
-
+	fmt.Println("5")
 	input := &sns.PublishInput{
 		Message:  msgPtr,
 		TopicArn: topicPtr,
 	}
-
+	fmt.Println("6")
 	result, err := s.client.Publish(context.TODO(), input)
+	fmt.Println("7")
 	if err != nil {
 		fmt.Println("Got an error publishing the message:")
 		fmt.Println(err)
 		return messageID, err
 	}
-
+	fmt.Println("8")
 	return result.MessageId, nil
 }
