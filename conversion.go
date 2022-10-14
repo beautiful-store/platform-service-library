@@ -120,3 +120,7 @@ func Map2Struct(mapData map[string]interface{}, object interface{}) error {
 func Map2Byte(mapData map[string]interface{}) ([]byte, error) {
 	return json.Marshal(mapData)
 }
+
+func String2Struct(str string, obj interface{}) error {
+	return json.Unmarshal([]byte(str), obj)
+}
