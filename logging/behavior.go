@@ -13,8 +13,10 @@ import (
 
 	"github.com/labstack/echo"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+
 	lib "github.com/beautiful-store/platform-service-library"
-	aws "github.com/beautiful-store/platform-service-library/aws"
+	awssns "github.com/beautiful-store/platform-service-library/aws"
 )
 
 var (
@@ -228,12 +230,12 @@ func (l *Log) OutToConsole() {
 	fmt.Println(l.Context)
 }
 
-func (l *Log) OutToSNS(topic string) error {
+func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
 	b, err := lib.Struct2Byte(l.Context)
 	if err != nil {
 		return err
 	}
-	_, err = aws.NewSNS().WithTopic(topic).Send(string(b))
+	_, err = awssns.NewSNS(cfg).WithTopic(topic).Send(string(b))
 	if err != nil {
 		return err
 	}
