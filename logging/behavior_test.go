@@ -2,13 +2,18 @@ package logging
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
-	lib "github.com/beautiful-store/platform-service-library"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+
 	"github.com/labstack/echo"
+
+	lib "github.com/beautiful-store/platform-service-library"
 )
 
 func TestBehavior(t *testing.T) {
@@ -85,11 +90,18 @@ func TestBehaviorOutToSNS(t *testing.T) {
 	log.WriteLog(c)
 
 	topic := os.Getenv("AWSSNS_BEHAVIOR_LOG_TOPIC")
-	if topic == "" {
-		topic = "arn:aws:sns:region:123456789:test_topic"
-	}
+	region := os.Getenv("AWS_DEFAULT_REGION")
+	accessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
+	secretAcessKeyID := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
-	err := log.OutToSNS(topic)
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(region),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, secretAcessKeyID, "")),
+	)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	err = log.OutToSNS(cfg, topic)
 	if err != nil {
 		t.Error(err)
 	}

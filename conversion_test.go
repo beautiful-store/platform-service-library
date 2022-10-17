@@ -117,21 +117,6 @@ func TestMap2Struct(t *testing.T) {
 	}
 }
 
-// func TestString2Struct(t *testing.T) {
-// 	str := `{id:1, name:"홍길동"}`
-// 	v1 := struct {
-// 		ID   int    `json:"id"`
-// 		Name string `json:"name"`
-// 	}{}
-
-// 	if err := json.Unmarshal([]byte(str), &v1); err != nil {
-// 		t.Fatal(err.Error())
-// 	}
-// 	// if err := String2Struct(str, v1); err != nil {
-// 	// 	t.Errorf(err.Error())
-// 	// }
-// }
-
 func TestString2Struct(t *testing.T) {
 	str := string(`{"id":1, "name":"홍길동"}`)
 	v1 := struct {
