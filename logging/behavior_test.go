@@ -10,6 +10,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
+
 	"github.com/labstack/echo"
 
 	lib "github.com/beautiful-store/platform-service-library"

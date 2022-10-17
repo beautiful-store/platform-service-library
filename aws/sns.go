@@ -49,15 +49,21 @@ func (s *awssns) Send(message string) (*string, error) {
 	if len(message) == 0 {
 		return messageID, errors.New("There is no message")
 	}
+
 	msgPtr := flag.String("message", message, "")
+
 	topicPtr := flag.String("topic", s.topic, "")
 
+
 	flag.Parse()
+
 	input := &sns.PublishInput{
 		Message:  msgPtr,
 		TopicArn: topicPtr,
 	}
+
 	result, err := s.client.Publish(context.TODO(), input)
+
 	if err != nil {
 		fmt.Println("got an error while publishing the message:")
 		fmt.Println(err)
