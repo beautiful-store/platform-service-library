@@ -51,9 +51,7 @@ func (s *awssns) Send(message string) (*string, error) {
 	}
 
 	msgPtr := flag.String("message", message, "")
-
 	topicPtr := flag.String("topic", s.topic, "")
-
 
 	flag.Parse()
 
@@ -65,9 +63,7 @@ func (s *awssns) Send(message string) (*string, error) {
 	result, err := s.client.Publish(context.TODO(), input)
 
 	if err != nil {
-		fmt.Println("got an error while publishing the message:")
-		fmt.Println(err)
-		return messageID, err
+		return messageID, fmt.Errorf("got an error while publishing the message:%v", err)
 	}
 
 	return result.MessageId, nil
