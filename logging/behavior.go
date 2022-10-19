@@ -2,10 +2,13 @@ package logging
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http/httputil"
+	"regexp"
 	"strconv"
 
 	"strings"
@@ -20,7 +23,8 @@ import (
 )
 
 var (
-	layout = time.RFC3339
+	layout        = time.RFC3339
+	passwordRegex = regexp.MustCompile(`"(password|passwd)":(\s)*"(.*)"`)
 )
 
 const (
@@ -59,13 +63,12 @@ type logContext struct {
 
 	Header string `json:"header" xorm:"header"`
 	Query  string `json:"query" xorm:"query"`
-	Form   string `json:"form" xorm:"form"`
+	Body   string `json:"body" xorm:"body"`
 
 	Status int    `json:"status" xorm:"status"`
 	Panic  bool   `json:"panic" xorm:"panic"`
 	Error  string `json:"error" xorm:"error"`
 
-	Body       string `json:"body" xorm:"body"`
 	StackTrace string `json:"stack_trace" xorm:"stack_trace"`
 
 	Latency int64 `json:"latency" xorm:"latency"`
@@ -126,24 +129,30 @@ func (l *Log) Begin(c echo.Context) {
 
 	bytesIn, _ := strconv.ParseInt(req.Header.Get(HeaderContentLength), 10, 64)
 
-	qparams := ""
+	var queryString string
 	if len(req.URL.Query()) > 0 {
 		params := make(map[string]interface{}, len(req.URL.Query()))
 		for k, v := range req.URL.Query() {
 			params[k] = v[0]
 		}
 		q, _ := lib.Map2Byte(params)
-		qparams = string(q)
+		queryString = string(q)
 	}
 
-	pparams := ""
-	if len(c.ParamNames()) > 0 {
-		params := make(map[string]interface{}, len(c.ParamNames()))
-		for _, name := range c.ParamNames() {
-			params[name] = c.Param(name)
+	var body string
+	b, _ := ioutil.ReadAll(req.Body)
+	c.Request().Body = ioutil.NopCloser(bytes.NewReader(b))
+
+	if b != nil {
+		bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
+		var bodyParam interface{}
+		d := json.NewDecoder(bytes.NewBuffer(bReplaced))
+		d.UseNumber()
+		if err := d.Decode(&bodyParam); err == nil {
+			body = fmt.Sprintf("%v", bodyParam)
+		} else {
+			body = string(b)
 		}
-		p, _ := lib.Map2Byte(params)
-		pparams = string(p)
 	}
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
@@ -158,8 +167,8 @@ func (l *Log) Begin(c echo.Context) {
 	l.Context.Referer = req.Referer()
 	l.Context.UserAgent = req.UserAgent()
 	l.Context.BytesIn = bytesIn
-	l.Context.Query = qparams
-	l.Context.Form = pparams
+	l.Context.Query = queryString
+	l.Context.Body = body
 	l.Context.Header = string(requestDump)
 }
 
