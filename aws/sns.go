@@ -48,8 +48,6 @@ func (s *awssns) Send(message string) (*string, error) {
 		fmt.Println("2************")
 		fmt.Println("*****", message)
 		fmt.Println("3************")
-
-		return
 	}()
 
 	if s == nil || s.client == nil {

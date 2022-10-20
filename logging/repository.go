@@ -23,7 +23,7 @@ func (l *Log) CheckAndMakeTable(engine *xorm.Engine) error {
 	}
 
 	if !exist {
-		c, ioErr := ioutil.ReadFile("ddl.sql")
+		c, ioErr := ioutil.ReadFile("./ddl.sql")
 		if ioErr != nil {
 			return ioErr
 		}
