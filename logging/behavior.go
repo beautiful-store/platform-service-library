@@ -2,6 +2,7 @@ package logging
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -144,6 +145,7 @@ func (l *Log) Begin(c echo.Context) {
 
 	if b != nil {
 		bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
+
 		body = string(bReplaced)
 		// var bodyParam interface{}
 		// d := json.NewDecoder(bytes.NewBuffer(bReplaced))
