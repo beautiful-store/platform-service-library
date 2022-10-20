@@ -25,6 +25,7 @@ type notification struct {
 	Token            string `json:"Token"`
 }
 
+// revive:disable:unexported-return
 func NewNotification(req *http.Request) *notification {
 	b, _ := ioutil.ReadAll(req.Body)
 
