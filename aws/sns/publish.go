@@ -43,7 +43,7 @@ func (s *awssns) Send(message string) (*string, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("[panic error]can't recover :", err)
+			fmt.Println("[panic error] can't recover :", err)
 		}
 	}()
 
@@ -59,7 +59,7 @@ func (s *awssns) Send(message string) (*string, error) {
 
 	uq := fmt.Sprintf("m%d", time.Now().UnixNano())
 
-	msgPtr := flag.String("m", uq, "")
+	msgPtr := flag.String(uq, message, "")
 	topicPtr := flag.String("t", s.topic, "")
 
 	flag.Parse()
