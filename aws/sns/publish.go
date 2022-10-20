@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
@@ -42,12 +43,8 @@ func (s *awssns) Send(message string) (*string, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("1************", err)
+			fmt.Println("[panic error]can't recover :", err)
 		}
-
-		fmt.Println("2************")
-		fmt.Println("*****", message)
-		fmt.Println("3************")
 	}()
 
 	if s == nil || s.client == nil {
@@ -60,7 +57,9 @@ func (s *awssns) Send(message string) (*string, error) {
 		return messageID, errors.New("There is no message")
 	}
 
-	msgPtr := flag.String("m", message, "")
+	uq := fmt.Sprintf("m%d", time.Now().UnixNano())
+
+	msgPtr := flag.String("m", uq, "")
 	topicPtr := flag.String("t", s.topic, "")
 
 	flag.Parse()
