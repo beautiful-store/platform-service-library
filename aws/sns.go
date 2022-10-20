@@ -40,6 +40,18 @@ func (s *awssns) WithTopic(topic string) *awssns {
 func (s *awssns) Send(message string) (*string, error) {
 	var messageID *string
 
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("1************")
+		}
+
+		fmt.Println("2************")
+		fmt.Println("*****", message)
+		fmt.Println("3************")
+
+		return
+	}()
+
 	if s == nil || s.client == nil {
 		return messageID, errors.New("can't fild aws sns or client")
 	}

@@ -145,14 +145,16 @@ func (l *Log) Begin(c echo.Context) {
 
 	if b != nil {
 		bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
-		var bodyParam interface{}
-		d := json.NewDecoder(bytes.NewBuffer(bReplaced))
-		d.UseNumber()
-		if err := d.Decode(&bodyParam); err == nil {
-			body = fmt.Sprintf("%v", bodyParam)
-		} else {
-			body = string(b)
-		}
+
+		body = string(bReplaced)
+		// var bodyParam interface{}
+		// d := json.NewDecoder(bytes.NewBuffer(bReplaced))
+		// d.UseNumber()
+		// if err := d.Decode(&bodyParam); err == nil {
+		// 	body = fmt.Sprintf("%v", bodyParam)
+		// } else {
+		// 	body = string(b)
+		// }
 	}
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
