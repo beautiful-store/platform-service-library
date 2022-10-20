@@ -18,7 +18,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	lib "github.com/beautiful-store/platform-service-library"
-	awssns "github.com/beautiful-store/platform-service-library/aws"
+	awssns "github.com/beautiful-store/platform-service-library/aws/sns"
 )
 
 var (

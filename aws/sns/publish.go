@@ -60,8 +60,8 @@ func (s *awssns) Send(message string) (*string, error) {
 		return messageID, errors.New("There is no message")
 	}
 
-	msgPtr := flag.String("message", message, "")
-	topicPtr := flag.String("topic", s.topic, "")
+	msgPtr := flag.String("m", message, "")
+	topicPtr := flag.String("t", s.topic, "")
 
 	flag.Parse()
 

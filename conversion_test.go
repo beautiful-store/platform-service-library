@@ -76,6 +76,31 @@ func TestStringToInt64Array(t *testing.T) {
 }
 
 func TestByte2Struct(t *testing.T) {
+	type s struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	}
+
+	v1 := s{
+		ID:   1,
+		Name: "홍길동",
+	}
+
+	v2 := &s{}
+
+	b, _ := json.Marshal(v1)
+
+	err := Byte2Struct(b, &v2)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	if v1.Name != v2.Name {
+		t.Errorf("expected : %v but get : %v", v1.Name, v2.Name)
+	}
+}
+
+func TestByte2Map(t *testing.T) {
 	v1 := &struct {
 		ID   int    `json:"id"`
 		Name string `json:"name"`
@@ -86,7 +111,7 @@ func TestByte2Struct(t *testing.T) {
 
 	b, _ := json.Marshal(v1)
 
-	result, err := Byte2Struct(b)
+	result, err := Byte2Map(b)
 
 	if err != nil {
 		t.Fatal(err.Error())

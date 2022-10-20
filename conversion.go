@@ -86,7 +86,15 @@ func StringToInt64Array(ids string, delim string) ([]int64, error) {
 	return int64IDs, nil
 }
 
-func Byte2Struct(b []byte) (*map[string]interface{}, error) {
+func Byte2Struct(b []byte, obj interface{}) error {
+	if err := json.Unmarshal(b, obj); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Byte2Map(b []byte) (*map[string]interface{}, error) {
 	m := make(map[string]interface{})
 	if err := json.Unmarshal(b, &m); err != nil {
 		return nil, err
@@ -101,7 +109,7 @@ func CreatedToMap(val interface{}) (*map[string]interface{}, error) {
 		return nil, err
 	}
 
-	return Byte2Struct(b)
+	return Byte2Map(b)
 }
 
 func Map2Struct(mapData map[string]interface{}, object interface{}) error {
