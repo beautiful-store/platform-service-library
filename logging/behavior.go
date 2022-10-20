@@ -227,7 +227,8 @@ func (l *Log) WriteLog(c echo.Context) {
 			if err == io.EOF {
 				break
 			}
-			traces = append(traces, string(trace))
+			s, err := strconv.Unquote(string(trace))
+			traces = append(traces, s)
 		}
 		l.Context.StackTrace = strings.Join(traces, ",")
 	}
