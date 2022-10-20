@@ -2,7 +2,6 @@ package logging
 
 import (
 	"fmt"
-	"io/ioutil"
 
 	"github.com/go-xorm/xorm"
 )
@@ -23,13 +22,8 @@ func (l *Log) CheckAndMakeTable(engine *xorm.Engine) error {
 	}
 
 	if !exist {
-		c, ioErr := ioutil.ReadFile("./ddl.sql")
-		if ioErr != nil {
-			return ioErr
-		}
-
-		query := string(c)
-		if _, err = engine.Exec(query); err != nil {
+		sql := sqlCreateTableBehaviorLog()
+		if _, err = engine.Exec(sql); err != nil {
 			return err
 		}
 	}
@@ -45,4 +39,41 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 	}
 
 	return nil
+}
+
+func sqlCreateTableBehaviorLog() string {
+	return `CREATE TABLE IF NOT EXISTS behavior_logs
+	(
+		id                  INT           NOT NULL AUTO_INCREMENT,
+		env                 VARCHAR(20)   NOT NULL,
+		module_name         VARCHAR(60)   NOT NULL,
+		time_unix_nano      BIGINT        NOT NULL,
+		timestamp           VARCHAR(60)   NOT NULL,
+		service_id	        VARCHAR(60)   NOT NULL,
+		service_name        VARCHAR(200)  NOT NULL,
+		parent_service_id   VARCHAR(60)   NOT NULL,
+		parent_service_name VARCHAR(200)  NOT NULL,
+		remote_ip           VARCHAR(30)   NOT NULL,
+		uri                 VARCHAR(1000) NOT NULL,
+		host                VARCHAR(100)  NOT NULL,
+		method              VARCHAR(10)   NOT NULL,
+		path                VARCHAR(200)  NOT NULL,
+		referer             VARCHAR(500)  NOT NULL,
+		user_agent          VARCHAR(500)  NOT NULL,
+		bytes_in            INT           NOT NULL,
+		bytes_out           INT           NOT NULL,
+		header              VARCHAR(1000) NOT NULL,
+		query               VARCHAR(1000) NOT NULL,
+		body                TEXT          NOT NULL,
+		status              SMALLINT		  NOT NULL,
+		panic		            TINYINT(1)    NOT NULL,
+		error		            VARCHAR(200)  NOT NULL,
+		stack_trace         TEXT          NOT NULL,
+		latency             INT           NOT NULL,
+		member_id           INT           NOT NULL,
+		member_name         VARCHAR(200)  NOT NULL,
+		member_orgid        INT           NOT NULL,
+		created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (id)
+	);`
 }

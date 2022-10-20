@@ -42,7 +42,7 @@ func (s *awssns) Send(message string) (*string, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("1************")
+			fmt.Println("1************", err)
 		}
 
 		fmt.Println("2************")

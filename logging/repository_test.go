@@ -2,7 +2,6 @@ package logging
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -28,12 +27,4 @@ func TestRepository(t *testing.T) {
 	if err = log.InsertTable(engine); err != nil {
 		t.Error(err)
 	}
-}
-
-func TestReadFile(t *testing.T) {
-	c, err := ioutil.ReadFile("./ddl.sql")
-	if err != nil {
-		t.Error(err)
-	}
-	t.Log(string(c))
 }
