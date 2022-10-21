@@ -26,6 +26,11 @@ func (l *Log) CheckAndMakeTable(engine *xorm.Engine) error {
 		if _, err = engine.Exec(sql); err != nil {
 			return err
 		}
+
+		dsql := sqlCreateTableBehaviorLogDetail()
+		if _, err = engine.Exec(dsql); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -36,6 +41,14 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 		return err
 	} else if affected != 1 {
 		return fmt.Errorf(fmt.Sprintf("affected rows can't be %d", affected))
+	}
+
+	str := l.Context.StackTrace
+	if str != "" {
+		stacks := ConvertLogDetails(l.Context.ID, str)
+		if stacks != nil && len(stacks) > 0 {
+			stacks.InsertTable(engine)
+		}
 	}
 
 	return nil
@@ -73,6 +86,22 @@ func sqlCreateTableBehaviorLog() string {
 		member_id           INT           NOT NULL,
 		member_name         VARCHAR(200)  NOT NULL,
 		member_orgid        INT           NOT NULL,
+		created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (id)
+	);`
+}
+
+func sqlCreateTableBehaviorLogDetail() string {
+	return `CREATE TABLE IF NOT EXISTS behavior_log_details
+	(
+		id						INT           NOT NULL AUTO_INCREMENT,
+		log_id 				INT           NOT,
+		db		        TINYINT(1)    NOT NULL,
+		file          VARCHAR(1000) NOT NULL,
+		func          VARCHAR(1000) NOT NULL,
+		level         VARCHAR(20)   NOT NULL,
+		msg           TEXT          NOT NULL,
+		time         	VARCHAR(60)   NOT NULL,
 		created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (id)
 	);`

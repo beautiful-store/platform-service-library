@@ -230,7 +230,7 @@ func (l *Log) WriteLog(c echo.Context) {
 
 			traces = append(traces, strings.Trim(string(trace), "\n\t"))
 		}
-		l.Context.StackTrace = strings.Join(traces, ",")
+		l.Context.StackTrace = strings.Join(traces, "\n")
 	}
 
 	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
