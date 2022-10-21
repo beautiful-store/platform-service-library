@@ -12,7 +12,17 @@ import (
 )
 
 func TestNewNotificationAddDB(t *testing.T) {
-	body := `"{\n \"Type\" : \"Notification\",\n \"MessageId\" : \"00000-0000-0000-0000-a0a000a00aa0\",\n \"TopicArn\" : \"arn:aws:sns:region:00000000:test_service\",\n \"Message\" : "{\\"env\\":\\"\\",\\"module_name\\":\\"testModule\\",\\"time_unix_nano\\":1666249515957513000,\\"timestamp\\":\\"2022-10-20T16:05:15+09:00\\",\\"service_id\\":\\"\\",\\"service_name\\":\\"UNKNOWN\\",\\"parent_service_id\\":\\"\\",\\"parent_service_name\\":\\"\\",\\"remote_ip\\":\\"192.0.2.1\\",\\"uri\\":\\"/\\",\\"host\\":\\"example.com\\",\\"method\\":\\"GET\\",\\"path\\":\\"/\\",\\"referer\\":\\"\\",\\"user_agent\\":\\"\\",\\"bytes_in\\":0,\\"bytes_out\\":0,\\"header\\":\\"\\",\\"query\\":\\"\\",\\"body\\":\\"\\",\\"status\\":0,\\"panic\\":false,\\"error\\":\\"\\",\\"stack_trace\\":\\"\\",\\"latency\\":0,\\"member_id\\":0,\\"member_orgid\\":0,\\"member_name\\":\\"\\"}",\n \"Timestamp\" : \"2022-10-20T05:25:54.442Z\",\n \"SignatureVersion\" : \"1\",\n \"Signature\" : \"uniqueno",\n \"SigningCertURL\" : \"https://sns.region.amazonaws.com/SimpleNotificationService-no.pem\",\n \"UnsubscribeURL\" : \"https://region.amazonaws.com/?Action=Unsubscribe\u0026SubscriptionArn=arn:aws:sns:region:000000000:test_service:00000-0000-0000-0000-a0a000a00aa0\"\n}"`
+	body := `{
+		"Type" : "Notification",
+		"MessageId" : "0000000-0000-0000-0000-000000000000",
+		"TopicArn" : "arn:aws:sns:region:000000000000:topic",
+		"Message" : "{\"env\":\"dev\",\"module_name\":\"service\",\"time_unix_nano\":1666328081182871206,\"timestamp\":\"2022-10-21T13:54:41+09:00\",\"service_id\":\"unique_no\",\"service_name\":\"service_name\",\"parent_service_id\":\"\",\"parent_service_name\":\"\",\"remote_ip\":\"0.0.0.0\",\"uri\":\"/api\",\"host\":\"host\",\"method\":\"GET\",\"path\":\"/api\",\"referer\":\"\",\"user_agent\":\"PostmanRuntime/7.29.2\",\"bytes_in\":1,\"bytes_out\":1,\"header\":\"\",\"query\":\"\",\"body\":\"{\\\"}\",\"status\":200,\"panic\":false,\"error\":\"\",\"stack_trace\":\"\",\"latency\":1,\"member_id\":0,\"member_orgid\":0,\"member_name\":\"\"}",
+		"Timestamp" : "2022-10-21T04:54:41.207Z",
+		"SignatureVersion" : "1",
+		"Signature" : "signature",
+		"SigningCertURL" : "https://sns.region/SimpleNotificationService",
+		"UnsubscribeURL" : "https://sns.region/?"
+	}`
 
 	reqBody := bytes.NewBufferString(body)
 	req := httptest.NewRequest("post", "https://dev-share-service.beautiful0.org/api/logging", reqBody)

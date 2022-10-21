@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"regexp"
 
 	lib "github.com/beautiful-store/platform-service-library"
 	"github.com/beautiful-store/platform-service-library/logging"
@@ -28,26 +27,8 @@ type notification struct {
 // revive:disable:unexported-return
 func NewNotification(req *http.Request) *notification {
 	b, _ := ioutil.ReadAll(req.Body)
+	body := string(b)
 
-	fmt.Println("1====", string(b))
-	fmt.Println("1end====")
-
-	reg1 := `(\\+)[n|t]`
-	reg2 := `\\+`
-
-	re1 := regexp.MustCompile(reg1)
-	re2 := regexp.MustCompile(reg2)
-	str1 := re1.ReplaceAllString(string(b), "")
-	body := re2.ReplaceAllString(str1, "")
-
-	// s, err := strconv.Unquote(string(b))
-	// if err != nil {
-	// 	fmt.Println("Unquote error=", err.Error())
-	// 	return nil
-	// }
-
-	fmt.Println("2====", body)
-	fmt.Println("2end====")
 	m := notification{}
 	if err := lib.Byte2Struct([]byte(body), &m); err != nil {
 		fmt.Println("Byte2Struct error=", err.Error())
@@ -56,6 +37,8 @@ func NewNotification(req *http.Request) *notification {
 		fmt.Println("messageID error=", "can't conver to notification")
 		return nil
 	}
+
+	fmt.Println("message:", m.Message)
 
 	return &m
 }
