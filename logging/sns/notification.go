@@ -29,19 +29,25 @@ type notification struct {
 func NewNotification(req *http.Request) *notification {
 	b, _ := ioutil.ReadAll(req.Body)
 
-	fmt.Println("1*", string(b))
+	fmt.Println("1====")
+	fmt.Println(string(b))
+	fmt.Println("1end====")
 
 	s, err := strconv.Unquote(string(b))
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Unquote error=", err.Error())
 		return nil
 	}
 
-	fmt.Println("2**", s)
-
+	fmt.Println("2====")
+	fmt.Println(s)
+	fmt.Println("2end====")
 	m := notification{}
 	if err := lib.Byte2Struct([]byte(s), &m); err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Byte2Struct error=", err.Error())
+		return nil
+	} else if m.MessageID == "" {
+		fmt.Println("messageID error=", "can't conver to notification")
 		return nil
 	}
 
