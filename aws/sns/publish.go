@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
@@ -57,10 +56,18 @@ func (s *awssns) Send(message string) (*string, error) {
 		return messageID, errors.New("There is no message")
 	}
 
-	uq := fmt.Sprintf("m%d", time.Now().UnixNano())
+	var msgPtr, topicPtr *string
 
-	msgPtr := flag.String(uq, message, "")
-	topicPtr := flag.String("t", s.topic, "")
+	if flag.Lookup("t") == nil {
+		topicPtr = flag.String("t", s.topic, "")
+	} else {
+		topicPtr = &(s.topic)
+	}
+	if flag.Lookup("m") == nil {
+		msgPtr = flag.String("m", message, "")
+	} else {
+		msgPtr = &message
+	}
 
 	flag.Parse()
 
