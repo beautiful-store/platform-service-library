@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
+	"regexp"
 
 	lib "github.com/beautiful-store/platform-service-library"
 	"github.com/beautiful-store/platform-service-library/logging"
@@ -29,21 +29,27 @@ type notification struct {
 func NewNotification(req *http.Request) *notification {
 	b, _ := ioutil.ReadAll(req.Body)
 
-	fmt.Println("1====")
-	fmt.Println(string(b))
+	fmt.Println("1====", string(b))
 	fmt.Println("1end====")
 
-	s, err := strconv.Unquote(string(b))
-	if err != nil {
-		fmt.Println("Unquote error=", err.Error())
-		return nil
-	}
+	reg1 := `(\\+)[n|t]`
+	reg2 := `\\+`
 
-	fmt.Println("2====")
-	fmt.Println(s)
+	re1 := regexp.MustCompile(reg1)
+	re2 := regexp.MustCompile(reg2)
+	str1 := re1.ReplaceAllString(string(b), "")
+	body := re2.ReplaceAllString(str1, "")
+
+	// s, err := strconv.Unquote(string(b))
+	// if err != nil {
+	// 	fmt.Println("Unquote error=", err.Error())
+	// 	return nil
+	// }
+
+	fmt.Println("2====", body)
 	fmt.Println("2end====")
 	m := notification{}
-	if err := lib.Byte2Struct([]byte(s), &m); err != nil {
+	if err := lib.Byte2Struct([]byte(body), &m); err != nil {
 		fmt.Println("Byte2Struct error=", err.Error())
 		return nil
 	} else if m.MessageID == "" {
