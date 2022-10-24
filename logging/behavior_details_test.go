@@ -20,11 +20,9 @@ func TestConvertLogDetails(t *testing.T) {
 	str := `{"file":"/go/src/sharing-platform-service/donation/repository/donation_repository.go:270","func":"sharing-platform-service/donation/repository.donationRepository.FindAll","level":"trace","msg":"","time":"2022-10-21T15:07:43+09:00"}`
 
 	stacks := ConvertLogDetails(logid, str)
-	if stacks == nil || len(stacks) == 0 {
+	if len(stacks) == 0 {
 		t.Error("converting error")
-	}
-	if stacks != nil && len(stacks) > 0 {
+	} else {
 		stacks.InsertTable(engine)
 	}
-
 }
