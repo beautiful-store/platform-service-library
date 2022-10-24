@@ -228,7 +228,8 @@ func (l *Log) WriteLog(c echo.Context) {
 				break
 			}
 
-			traces = append(traces, strings.Trim(string(trace), "\n\t"))
+			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
+			traces = append(traces, string(trace))
 		}
 		l.Context.StackTrace = strings.Join(traces, "\n")
 	}

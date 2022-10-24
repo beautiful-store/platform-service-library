@@ -95,7 +95,7 @@ func sqlCreateTableBehaviorLogDetail() string {
 	return `CREATE TABLE IF NOT EXISTS behavior_log_details
 	(
 		id						INT           NOT NULL AUTO_INCREMENT,
-		log_id 				INT           NOT,
+		log_id 				INT           NOT NULL,
 		db		        TINYINT(1)    NOT NULL,
 		file          VARCHAR(1000) NOT NULL,
 		func          VARCHAR(1000) NOT NULL,
