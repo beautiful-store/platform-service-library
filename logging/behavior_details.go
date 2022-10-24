@@ -10,6 +10,7 @@ import (
 
 type logDetails []*logDetail
 
+// revive:disable:unexported-return
 func ConvertLogDetails(logID int64, s string) logDetails {
 	details := make([]*logDetail, 0)
 

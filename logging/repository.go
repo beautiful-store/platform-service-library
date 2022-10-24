@@ -46,7 +46,7 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 	str := l.Context.StackTrace
 	if str != "" {
 		stacks := ConvertLogDetails(l.Context.ID, str)
-		if stacks != nil && len(stacks) > 0 {
+		if len(stacks) > 0 {
 			stacks.InsertTable(engine)
 		}
 	}
