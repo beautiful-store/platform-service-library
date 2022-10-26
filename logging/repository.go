@@ -62,6 +62,7 @@ func sqlCreateTableBehaviorLog() string {
 		module_name         VARCHAR(60)   NOT NULL,
 		time_unix_nano      BIGINT        NOT NULL,
 		timestamp           VARCHAR(60)   NOT NULL,
+		trace_id	        	VARCHAR(60)   NOT NULL,
 		service_id	        VARCHAR(60)   NOT NULL,
 		service_name        VARCHAR(200)  NOT NULL,
 		parent_service_id   VARCHAR(60)   NOT NULL,

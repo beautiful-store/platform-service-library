@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http/httputil"
-	"regexp"
 	"strconv"
 
 	"strings"
@@ -22,8 +21,8 @@ import (
 )
 
 var (
-	layout        = time.RFC3339
-	passwordRegex = regexp.MustCompile(`"(password|passwd)":(\s)*"(.*)"`)
+	layout = time.RFC3339
+	// passwordRegex = regexp.MustCompile(`"(password|passwd)":(\s)*"(.*)"`)
 )
 
 const (
@@ -44,6 +43,7 @@ type logContext struct {
 	ModuleName        string `json:"module_name" xorm:"module_name"`
 	TimeUnixNano      int64  `json:"time_unix_nano" xorm:"time_unix_nano"`
 	Timestamp         string `json:"timestamp" xorm:"timestamp"`
+	TraceID           string `json:"trace_id" xorm:"trace_id"`
 	ServiceID         string `json:"service_id" xorm:"service_id"`
 	ServiceName       string `json:"service_name" xorm:"service_name"`
 	ParentServiceID   string `json:"parent_service_id" xorm:"parent_service_id"`
@@ -104,6 +104,8 @@ func (l *Log) Begin(c echo.Context) {
 
 	req := c.Request()
 
+	serviceID := c.Response().Header().Get(echo.HeaderXRequestID)
+	traceID := serviceID
 	serviceName := "UNKNOWN"
 	for _, r := range c.Echo().Routes() {
 		if r.Method == req.Method && r.Path == c.Path() {
@@ -143,8 +145,8 @@ func (l *Log) Begin(c echo.Context) {
 	c.Request().Body = ioutil.NopCloser(bytes.NewReader(b))
 
 	if b != nil {
-		bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
-		body = string(bReplaced)
+		body = string(b)
+		// bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
 		// var bodyParam interface{}
 		// d := json.NewDecoder(bytes.NewBuffer(bReplaced))
 		// d.UseNumber()
@@ -157,7 +159,8 @@ func (l *Log) Begin(c echo.Context) {
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
 
-	l.Context.ServiceID = c.Response().Header().Get(echo.HeaderXRequestID)
+	l.Context.TraceID = traceID
+	l.Context.ServiceID = serviceID
 	l.Context.ServiceName = serviceName
 	l.Context.RemoteIP = realIP
 	l.Context.URI = req.RequestURI
