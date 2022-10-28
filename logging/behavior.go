@@ -2,6 +2,7 @@ package logging
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -145,85 +146,17 @@ func (l *Log) Begin(c echo.Context) {
 	c.Request().Body = ioutil.NopCloser(bytes.NewReader(b))
 
 	if b != nil {
-		body = string(b)
+		// body = string(b)
 		// bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
-		// var bodyParam interface{}
-		// d := json.NewDecoder(bytes.NewBuffer(bReplaced))
-		// d.UseNumber()
-		// if err := d.Decode(&bodyParam); err == nil {
-		// 	body = fmt.Sprintf("%v", bodyParam)
-		// } else {
-		// 	body = string(b)
-		// }
-	}
-
-	requestDump, _ := httputil.DumpRequestOut(req, true)
-
-	l.Context.TraceID = traceID
-	l.Context.ServiceID = serviceID
-	l.Context.ServiceName = serviceName
-	l.Context.RemoteIP = realIP
-	l.Context.URI = req.RequestURI
-	l.Context.Host = req.Host
-	l.Context.Method = req.Method
-	l.Context.Path = path
-	l.Context.Referer = req.Referer()
-	l.Context.UserAgent = req.UserAgent()
-	l.Context.BytesIn = bytesIn
-	l.Context.Query = queryString
-	l.Context.Body = body
-	l.Context.Header = string(requestDump)
-}
-
-func (l *Log) Start(c echo.Context) {
-	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
-	l.Context.Timestamp = time.Now().Format(layout)
-	l.Context.StartTime = time.Now()
-
-	req := c.Request()
-
-	serviceID := c.Response().Header().Get(echo.HeaderXRequestID)
-	traceID := serviceID
-	serviceName := "UNKNOWN"
-	for _, r := range c.Echo().Routes() {
-		if r.Method == req.Method && r.Path == c.Path() {
-			serviceName = r.Name
-			break
+		var bodyParam interface{}
+		d := json.NewDecoder(bytes.NewBuffer(b))
+		d.UseNumber()
+		if err := d.Decode(&bodyParam); err == nil {
+			// body = fmt.Sprintf("%v", bodyParam)
+			body, _ = lib.Struct2Json(bodyParam)
+		} else {
+			body = string(b)
 		}
-	}
-
-	realIP := req.RemoteAddr
-	if ip := req.Header.Get(HeaderXForwardedFor); ip != "" {
-		realIP = strings.Split(ip, ", ")[0]
-	} else if ip := req.Header.Get(HeaderXRealIP); ip != "" {
-		realIP = ip
-	} else {
-		realIP, _, _ = net.SplitHostPort(realIP)
-	}
-
-	path := req.URL.Path
-	if path == "" {
-		path = "/"
-	}
-
-	bytesIn, _ := strconv.ParseInt(req.Header.Get(HeaderContentLength), 10, 64)
-
-	var queryString string
-	if len(req.URL.Query()) > 0 {
-		params := make(map[string]interface{}, len(req.URL.Query()))
-		for k, v := range req.URL.Query() {
-			params[k] = v[0]
-		}
-		q, _ := lib.Map2Byte(params)
-		queryString = string(q)
-	}
-
-	var body string
-	b, _ := ioutil.ReadAll(req.Body)
-	// c.Request().Body = ioutil.NopCloser(bytes.NewReader(b))
-
-	if b != nil {
-		body = string(b)
 	}
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
