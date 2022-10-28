@@ -175,18 +175,18 @@ func (l *Log) Begin(c echo.Context) {
 	l.Context.Header = string(requestDump)
 }
 
-func (l *Log) Start(c *echo.Context) {
+func (l *Log) Start(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
 	l.Context.Timestamp = time.Now().Format(layout)
 	l.Context.StartTime = time.Now()
 
-	req := (*c).Request()
+	req := c.Request()
 
-	serviceID := (*c).Response().Header().Get(echo.HeaderXRequestID)
+	serviceID := c.Response().Header().Get(echo.HeaderXRequestID)
 	traceID := serviceID
 	serviceName := "UNKNOWN"
-	for _, r := range (*c).Echo().Routes() {
-		if r.Method == req.Method && r.Path == (*c).Path() {
+	for _, r := range c.Echo().Routes() {
+		if r.Method == req.Method && r.Path == c.Path() {
 			serviceName = r.Name
 			break
 		}
@@ -219,20 +219,12 @@ func (l *Log) Start(c *echo.Context) {
 	}
 
 	var body string
-	b, _ := ioutil.ReadAll(req.Body)
-	req.Body = ioutil.NopCloser(bytes.NewReader(b))
-
-	if b != nil {
+	b, err := ioutil.ReadAll(req.Body)
+	if err != nil {
 		body = string(b)
-		// bReplaced := passwordRegex.ReplaceAll(b, []byte(`"$1": "*"`))
-		// var bodyParam interface{}
-		// d := json.NewDecoder(bytes.NewBuffer(bReplaced))
-		// d.UseNumber()
-		// if err := d.Decode(&bodyParam); err == nil {
-		// 	body = fmt.Sprintf("%v", bodyParam)
-		// } else {
-		// 	body = string(b)
-		// }
+		req.Body = ioutil.NopCloser(bytes.NewReader(b))
+	} else {
+		body = "error while reading body:" + err.Error()
 	}
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
