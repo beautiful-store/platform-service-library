@@ -219,12 +219,11 @@ func (l *Log) Start(c echo.Context) {
 	}
 
 	var body string
-	b, err := ioutil.ReadAll(req.Body)
-	if err != nil {
+	b, _ := ioutil.ReadAll(req.Body)
+	// c.Request().Body = ioutil.NopCloser(bytes.NewReader(b))
+
+	if b != nil {
 		body = string(b)
-		req.Body = ioutil.NopCloser(bytes.NewReader(b))
-	} else {
-		body = "error while reading body:" + err.Error()
 	}
 
 	requestDump, _ := httputil.DumpRequestOut(req, true)
