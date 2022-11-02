@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 
 	lib "github.com/beautiful-store/platform-service-library"
 )
