@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	lib "github.com/beautiful-store/platform-service-library"
-	"github.com/beautiful-store/platform-service-library/logging"
+	"github.com/beautiful-store/platform-service-library/logging/behavior"
 	"github.com/go-xorm/xorm"
 )
 
@@ -52,7 +52,7 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 		return errors.New("aws sns notification message is empty")
 	}
 
-	log := logging.DecodeLogMessage(n.Message)
+	log := behavior.DecodeLogMessage(n.Message)
 	if log == nil {
 		return errors.New("log message converting error")
 	}

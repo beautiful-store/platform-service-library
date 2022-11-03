@@ -1,4 +1,4 @@
-package logging
+package behavior
 
 type logDetail struct {
 	ID    int64  `xorm:"id pk autoincr" json:"-"`
