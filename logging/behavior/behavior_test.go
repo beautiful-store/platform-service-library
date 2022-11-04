@@ -89,7 +89,7 @@ func TestOutToSNS(t *testing.T) {
 	log.Begin(c)
 	log.WriteLog(c)
 
-	topic := os.Getenv("AWSSNS_BEHAVIOR_LOG_TOPIC")
+	topic := os.Getenv("AWSSNS_LOG_TOPIC")
 	region := os.Getenv("AWS_DEFAULT_REGION")
 	accessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
 	secretAcessKeyID := os.Getenv("AWS_SECRET_ACCESS_KEY")
