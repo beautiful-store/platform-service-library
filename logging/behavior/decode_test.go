@@ -2,15 +2,40 @@ package behavior
 
 import (
 	"testing"
-
-	lib "github.com/beautiful-store/platform-service-library"
 )
 
-func TestDecodeLogMessage(t *testing.T) {
-	json := `{"module_name":"testModule","time_unix_nano":1665620378841470000,"timestamp":"2022-10-13T09:19:38+09:00","service_id":"","service_name":"UNKNOWN","parent_service_id":"","parent_service_name":"","remote_ip":"192.0.2.1","uri":"/","host":"example.com","method":"GET","path":"/","referer":"","user_agent":"","bytes_in":0,"bytes_out":0,"header":"","query":"","form":"","status":0,"panic":false,"error":"panic message","body":"","stack_trace":"","latency":0,"member_id":0,"member_orgid":0,"member_name":""}`
+func TestDecodeMessage(t *testing.T) {
+	l := logContext{ModuleName: "testModule",
+		TimeUnixNano:      1665620378841470000,
+		Timestamp:         "2022-10-13T09:19:38+09:00",
+		ServiceID:         "",
+		ServiceName:       "UNKNOWN",
+		ParentServiceID:   "",
+		ParentServiceName: "",
+		RemoteIP:          "192.0.2.1",
+		URI:               "/",
+		Host:              "example.com",
+		Method:            "GET",
+		Path:              "/",
+		Referer:           "",
+		UserAgent:         "",
+		BytesIn:           0,
+		BytesOut:          0,
+		Header:            "",
+		Query:             "",
+		Status:            0,
+		Panic:             false,
+		Error:             "panic message",
+		Body:              "",
+		StackTrace:        "",
+		Latency:           0,
+		MemberID:          0,
+		MemberOrgID:       0,
+		MemberName:        "",
+	}
 
-	log := DecodeLogMessage(json)
+	log := DecodeMessage(l)
 
 	log.OutToConsole()
-	t.Log(lib.Struct2Json(log.Context))
+	t.Log(log.Context)
 }

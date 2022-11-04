@@ -78,7 +78,7 @@ func TestBehaviorWithPanic(t *testing.T) {
 	log.OutToConsole()
 	t.Log(lib.Struct2Json(log.Context))
 }
-func TestBehaviorOutToSNS(t *testing.T) {
+func TestOutToSNS(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()

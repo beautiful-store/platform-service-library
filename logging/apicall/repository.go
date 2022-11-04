@@ -6,25 +6,6 @@ import (
 	"github.com/go-xorm/xorm"
 )
 
-type APICall struct {
-	ID         int64  `xorm:"id pk autoincr" json:"-"`
-	Env        string `xorm:"env"  json:"env"`
-	ModuleName string `xorm:"module_name"  json:"moduleName"`
-	LogType    string `xorm:"log_type"  json:"logType"`
-	FullURL    string `xorm:"full_url"  json:"fullURL"`
-	Request    string `xorm:"json 'request'"  json:"request"`
-	Response   string `xorm:"json 'response'"  json:"response"`
-	ErrorMsg   string `xorm:"error_msg"  json:"errorMsg"`
-	DonationID int64  `xorm:"donation_id"  json:"donationID"`
-	CourierID  int64  `xorm:"courier_id"  json:"courierID"`
-	OrgID      int64  `xorm:"org_id"  json:"orgID"`
-	MemberID   int64  `xorm:"member_id"  json:"memberID"`
-}
-
-func (*APICall) TableName() string {
-	return "api_calls"
-}
-
 func (a *APICall) CheckTable(engine *xorm.Engine) bool {
 	exist, err := engine.IsTableExist(a.TableName())
 	if err != nil {
@@ -36,7 +17,7 @@ func (a *APICall) CheckTable(engine *xorm.Engine) bool {
 
 func (a *APICall) CheckAndMakeTable(engine *xorm.Engine) {
 	if exist := a.CheckTable(engine); !exist {
-		sql := a.sqlCreateTableAPICall()
+		sql := a.sqlCreateTable()
 		if _, err := engine.Exec(sql); err != nil {
 			panic(err)
 		}
@@ -53,7 +34,7 @@ func (a *APICall) InsertTable(engine *xorm.Engine) error {
 	return nil
 }
 
-func (a *APICall) sqlCreateTableAPICall() string {
+func (a *APICall) sqlCreateTable() string {
 	return fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s
 	(
 		id            		INT           NOT NULL auto_increment,

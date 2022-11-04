@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	lib "github.com/beautiful-store/platform-service-library"
+	"github.com/beautiful-store/platform-service-library/aws/sns"
+	"github.com/beautiful-store/platform-service-library/logging/apicall"
 	"github.com/beautiful-store/platform-service-library/logging/behavior"
 	"github.com/go-xorm/xorm"
 )
@@ -38,8 +40,6 @@ func NewNotification(req *http.Request) *notification {
 		return nil
 	}
 
-	fmt.Println("message:", m.Message)
-
 	return &m
 }
 
@@ -52,17 +52,30 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 		return errors.New("aws sns notification message is empty")
 	}
 
-	log := behavior.DecodeLogMessage(n.Message)
-	if log == nil {
-		return errors.New("log message converting error")
-	}
-
-	if err := log.CheckAndMakeTable(engine); err != nil {
+	s := &sns.SNSMessage{}
+	if err := lib.String2Struct(n.Message, s); err != nil {
 		return err
 	}
 
-	if err := log.InsertTable(engine); err != nil {
-		return err
+	switch s.Type {
+	case sns.Behavior.String():
+		log := behavior.DecodeMessage(s.Message)
+		if log == nil {
+			return errors.New("behavior : log message converting error")
+		}
+		log.CheckAndMakeTable(engine)
+		if err := log.InsertTable(engine); err != nil {
+			return err
+		}
+	case sns.APICall.String():
+		log := apicall.DecodeMessage(s.Message)
+		if log == nil {
+			return errors.New("apicall : log message converting error")
+		}
+		log.CheckAndMakeTable(engine)
+		if err := log.InsertTable(engine); err != nil {
+			return err
+		}
 	}
 
 	return nil

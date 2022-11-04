@@ -8,7 +8,14 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
+
+	lib "github.com/beautiful-store/platform-service-library"
 )
+
+type SNSMessage struct {
+	Type    string
+	Message interface{}
+}
 
 // nolint
 type snsPublishAPI interface {
@@ -37,8 +44,21 @@ func (s *awssns) WithTopic(topic string) *awssns {
 	return s
 }
 
-func (s *awssns) Send(message string) (*string, error) {
+func (s *awssns) Send(snsType string, snsMessage interface{}) (*string, error) {
 	var messageID *string
+
+	if snsType == "" {
+		return messageID, errors.New("There is no sns type")
+	}
+	if snsMessage == nil {
+		return messageID, errors.New("There is no sns message")
+	}
+	if s == nil || s.client == nil {
+		return messageID, errors.New("can't fild aws sns or client")
+	}
+	if len(s.topic) == 0 {
+		return messageID, errors.New("can't find the topic")
+	}
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -46,15 +66,16 @@ func (s *awssns) Send(message string) (*string, error) {
 		}
 	}()
 
-	if s == nil || s.client == nil {
-		return messageID, errors.New("can't fild aws sns or client")
+	m := SNSMessage{
+		Type:    snsType,
+		Message: snsMessage,
 	}
-	if len(s.topic) == 0 {
-		return messageID, errors.New("can't find the topic")
+
+	b, err := lib.Struct2Byte(m)
+	if err != nil {
+		return messageID, err
 	}
-	if len(message) == 0 {
-		return messageID, errors.New("There is no message")
-	}
+	message := string(b)
 
 	var msgPtr, topicPtr *string
 

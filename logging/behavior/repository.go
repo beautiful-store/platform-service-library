@@ -15,26 +15,35 @@ func (l *Log) CheckTable(session *xorm.Engine) bool {
 	return exist
 }
 
-func (l *Log) CheckAndMakeTable(engine *xorm.Engine) error {
-	exist, err := engine.IsTableExist(l.Context.TableName())
-	if err != nil {
-		return err
-	}
-
-	if !exist {
-		sql := sqlCreateTableBehaviorLog()
-		if _, err = engine.Exec(sql); err != nil {
-			return err
-		}
-
-		dsql := sqlCreateTableBehaviorLogDetail()
-		if _, err = engine.Exec(dsql); err != nil {
-			return err
+func (l *Log) CheckAndMakeTable(engine *xorm.Engine) {
+	if exist := l.CheckTable(engine); !exist {
+		sql := l.sqlCreateTable()
+		if _, err := engine.Exec(sql); err != nil {
+			panic(err)
 		}
 	}
-
-	return nil
 }
+
+// func (l *Log) CheckAndMakeTable(engine *xorm.Engine) error {
+// 	exist, err := engine.IsTableExist(l.Context.TableName())
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	if !exist {
+// 		sql := sqlCreateTableBehaviorLog()
+// 		if _, err = engine.Exec(sql); err != nil {
+// 			return err
+// 		}
+
+// 		dsql := sqlCreateTableBehaviorLogDetail()
+// 		if _, err = engine.Exec(dsql); err != nil {
+// 			return err
+// 		}
+// 	}
+
+// 	return nil
+// }
 
 func (l *Log) InsertTable(engine *xorm.Engine) error {
 	if affected, err := engine.Insert(l.Context); err != nil {
@@ -54,7 +63,7 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 	return nil
 }
 
-func sqlCreateTableBehaviorLog() string {
+func (l *Log) sqlCreateTable() string {
 	return `CREATE TABLE IF NOT EXISTS behavior_logs
 	(
 		id                  INT           NOT NULL AUTO_INCREMENT,

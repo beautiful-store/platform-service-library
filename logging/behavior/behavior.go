@@ -18,6 +18,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	lib "github.com/beautiful-store/platform-service-library"
+	"github.com/beautiful-store/platform-service-library/aws/sns"
 	awssns "github.com/beautiful-store/platform-service-library/aws/sns"
 )
 
@@ -274,11 +275,13 @@ func (l *Log) OutToConsole() {
 }
 
 func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
-	b, err := lib.Struct2Byte(l.Context)
-	if err != nil {
-		return err
-	}
-	_, err = awssns.NewSNS(cfg).WithTopic(topic).Send(string(b))
+	// b, err := lib.Struct2Byte(l.Context)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// _, err = awssns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), string(b))
+	_, err := awssns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), l.Context)
 	if err != nil {
 		return err
 	}

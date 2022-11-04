@@ -1,4 +1,4 @@
-package sns
+package apicall
 
 import (
 	"context"
@@ -7,30 +7,38 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
+	lib "github.com/beautiful-store/platform-service-library"
 )
 
-func TestSendSNS(t *testing.T) {
-	topic := os.Getenv("AWSSNS_BEHAVIOR_LOG_TOPIC")
+func TestOutToSNS(t *testing.T) {
+	log := &APICall{
+		Env:        "test",
+		ModuleName: "test",
+		LogType:    "test",
+		FullURL:    "http://test",
+		Request:    "",
+		Response:   "",
+		DonationID: 1,
+		MemberID:   1,
+	}
+
+	topic := os.Getenv("AWSSNS_LOG_TOPIC")
 	region := os.Getenv("AWS_DEFAULT_REGION")
 	accessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
 	secretAcessKeyID := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithDefaultRegion(region),
+		config.WithRegion(region),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, secretAcessKeyID, "")),
 	)
 	if err != nil {
-		t.Fatal(err.Error())
+		t.Error(err.Error())
 	}
 
-	sns := NewSNS(cfg).WithTopic(topic)
+	err = log.OutToSNS(cfg, topic)
+	if err != nil {
+		t.Error(err)
+	}
 
-	_, err = sns.Send(Behavior.String(), "this is test1111")
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	_, err = sns.Send(Behavior.String(), "this is test222")
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	t.Log(lib.Struct2Json(&log))
 }
