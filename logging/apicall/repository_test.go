@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
+	lib "github.com/beautiful-store/platform-service-library"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )
 
 func TestRepository(t *testing.T) {
-	driver := "mysql"
-	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOCAL_DB_USER"), os.Getenv("LOCAL_DB_PASSWORD"), os.Getenv("LOCAL_MYSQL"))
+	driver := os.Getenv("LOG_DB_DRIVER")
+	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOG_DB_USER"), os.Getenv("LOG_DB_PASSWORD"), os.Getenv("LOG_DB_CONNECTION"))
 
 	engine, err := xorm.NewEngine(driver, dbConnection)
 	if err != nil {
@@ -21,6 +23,7 @@ func TestRepository(t *testing.T) {
 	log := APICall{
 		Env:        "test",
 		ModuleName: "TEST",
+		Timestamp:  time.Now().Format(lib.DateLayout19),
 		LogType:    InternalShaingAPI.String(),
 		FullURL:    "https://www.daum.net",
 		Request:    `{}`,

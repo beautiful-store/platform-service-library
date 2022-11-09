@@ -2,8 +2,11 @@ package apicall
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-xorm/xorm"
+
+	lib "github.com/beautiful-store/platform-service-library"
 )
 
 func (a *APICall) CheckTable(engine *xorm.Engine) bool {
@@ -25,6 +28,9 @@ func (a *APICall) CheckAndMakeTable(engine *xorm.Engine) {
 }
 
 func (a *APICall) InsertTable(engine *xorm.Engine) error {
+	if a.Timestamp == "" {
+		a.Timestamp = time.Now().Format(lib.DateLayout19)
+	}
 	if affected, err := engine.Insert(a); err != nil {
 		return err
 	} else if affected != 1 {
@@ -40,6 +46,7 @@ func (a *APICall) sqlCreateTable() string {
 		id            		INT           NOT NULL auto_increment,
 		env           		VARCHAR(20)   NOT NULL,
 		module_name   		VARCHAR(60)   NOT NULL,
+		timestamp     		VARCHAR(60)   NOT NULL,		
 		log_type      		VARCHAR(20)   NOT NULL,
 		full_url      		VARCHAR(200)  NOT NULL,
 		request       		JSON          NULL,
