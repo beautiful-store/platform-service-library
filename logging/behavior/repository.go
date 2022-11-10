@@ -20,6 +20,11 @@ func (l *Log) CheckAndMakeTable(engine *xorm.Engine) {
 		sql := l.sqlCreateTable()
 		if _, err := engine.Exec(sql); err != nil {
 			panic(err)
+		} else {
+			sql = l.sqlCreateTableBehaviorLogDetail()
+			if _, err := engine.Exec(sql); err != nil {
+				panic(err)
+			}
 		}
 	}
 }
@@ -101,7 +106,7 @@ func (l *Log) sqlCreateTable() string {
 	);`
 }
 
-func sqlCreateTableBehaviorLogDetail() string {
+func (l *Log) sqlCreateTableBehaviorLogDetail() string {
 	return `CREATE TABLE IF NOT EXISTS behavior_log_details
 	(
 		id						INT           NOT NULL AUTO_INCREMENT,
