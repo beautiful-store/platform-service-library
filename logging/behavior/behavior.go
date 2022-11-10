@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http/httputil"
 	"strconv"
@@ -19,7 +18,6 @@ import (
 
 	lib "github.com/beautiful-store/platform-service-library"
 	"github.com/beautiful-store/platform-service-library/aws/sns"
-	awssns "github.com/beautiful-store/platform-service-library/aws/sns"
 )
 
 var (
@@ -101,7 +99,7 @@ func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
-	l.Context.Timestamp = time.Now().Format(layout)
+	l.Context.Timestamp = time.Now().Local().Format(layout)
 	l.Context.StartTime = time.Now()
 
 	req := c.Request()
@@ -143,8 +141,8 @@ func (l *Log) Begin(c echo.Context) {
 	}
 
 	var body string
-	b, _ := ioutil.ReadAll(req.Body)
-	c.Request().Body = ioutil.NopCloser(bytes.NewReader(b))
+	b, _ := io.ReadAll(req.Body)
+	c.Request().Body = io.NopCloser(bytes.NewReader(b))
 
 	if b != nil {
 		// body = string(b)
@@ -281,7 +279,7 @@ func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
 	// }
 
 	// _, err = awssns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), string(b))
-	_, err := awssns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), l.Context)
+	_, err := sns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), l.Context)
 	if err != nil {
 		return err
 	}

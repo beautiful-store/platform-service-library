@@ -3,7 +3,7 @@ package sns
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	lib "github.com/beautiful-store/platform-service-library"
@@ -28,7 +28,7 @@ type notification struct {
 
 // revive:disable:unexported-return
 func NewNotification(req *http.Request) *notification {
-	b, _ := ioutil.ReadAll(req.Body)
+	b, _ := io.ReadAll(req.Body)
 	body := string(b)
 
 	m := notification{}
@@ -52,7 +52,7 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 		return errors.New("aws sns notification message is empty")
 	}
 
-	s := &sns.SNSMessage{}
+	s := &sns.Message{}
 	if err := lib.String2Struct(n.Message, s); err != nil {
 		return err
 	}

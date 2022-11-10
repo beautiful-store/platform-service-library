@@ -29,7 +29,7 @@ func (a *APICall) CheckAndMakeTable(engine *xorm.Engine) {
 
 func (a *APICall) InsertTable(engine *xorm.Engine) error {
 	if a.Timestamp == "" {
-		a.Timestamp = time.Now().Format(lib.DateLayout19)
+		a.Timestamp = time.Now().Local().Format(lib.DateLayout19)
 	}
 	if affected, err := engine.Insert(a); err != nil {
 		return err

@@ -12,7 +12,7 @@ import (
 	lib "github.com/beautiful-store/platform-service-library"
 )
 
-type SNSMessage struct {
+type Message struct {
 	Type    string
 	Message interface{}
 }
@@ -66,7 +66,7 @@ func (s *awssns) Send(snsType string, snsMessage interface{}) (*string, error) {
 		}
 	}()
 
-	m := SNSMessage{
+	m := Message{
 		Type:    snsType,
 		Message: snsMessage,
 	}
