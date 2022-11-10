@@ -99,7 +99,7 @@ func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
-	l.Context.Timestamp = time.Now().Local().Format(layout)
+	l.Context.Timestamp = time.Now().In(lib.GetAsiaSeoulTimeLocation()).Format(layout)
 	l.Context.StartTime = time.Now()
 
 	req := c.Request()
