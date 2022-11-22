@@ -243,6 +243,20 @@ func (l *Log) WriteLog(c echo.Context) {
 			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
 			traces = append(traces, string(trace))
 		}
+		l.Context.StackTrace = strings.Join(traces, "")
+	}
+
+	if l.Context.SQL != nil {
+		var traces []string
+		for {
+			trace, err := l.Context.SQL.ReadBytes('\n')
+			if err == io.EOF {
+				break
+			}
+
+			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
+			traces = append(traces, string(trace))
+		}
 		l.Context.StackTrace = strings.Join(traces, "\n")
 	}
 
@@ -259,6 +273,7 @@ func (l *Log) Write(c *echo.Context) {
 	dumpResponse, _ := httputil.DumpResponse((*c).Request().Response, true)
 	l.Context.Header = string(dumpResponse)
 
+	// behavior trace
 	if l.Context.Stack != nil {
 		var traces []string
 		for {
@@ -272,6 +287,8 @@ func (l *Log) Write(c *echo.Context) {
 		}
 		l.Context.StackTrace = strings.Join(traces, "")
 	}
+
+	// sql trace
 	if l.Context.SQL != nil {
 		var traces []string
 		for {
@@ -294,12 +311,6 @@ func (l *Log) OutToConsole() {
 }
 
 func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
-	// b, err := lib.Struct2Byte(l.Context)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// _, err = awssns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), string(b))
 	_, err := sns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), l.Context)
 	if err != nil {
 		return err
