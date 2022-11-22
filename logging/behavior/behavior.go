@@ -21,8 +21,7 @@ import (
 )
 
 var (
-	layout = time.RFC3339
-	// passwordRegex = regexp.MustCompile(`"(password|passwd)":(\s)*"(.*)"`)
+	layout = time.RFC3339Nano
 )
 
 const (
@@ -101,7 +100,7 @@ func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
-	l.Context.Timestamp = time.Now().In(lib.GetAsiaSeoulTimeLocation()).Format(layout)
+	l.Context.Timestamp = l.GetDefaultLocalDateTimeNano()
 	l.Context.StartTime = time.Now()
 
 	req := c.Request()
@@ -312,6 +311,10 @@ func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
 	}
 
 	return nil
+}
+
+func (l *Log) GetDefaultLocalDateTimeNano() string {
+	return time.Now().In(lib.GetAsiaSeoulTimeLocation()).Format(layout)
 }
 
 func newLogContext(moduleName string) *logContext {
