@@ -239,8 +239,6 @@ func (l *Log) WriteLog(c echo.Context) {
 			if err == io.EOF {
 				break
 			}
-
-			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
 			traces = append(traces, string(trace))
 		}
 		l.Context.StackTrace = strings.Join(traces, "")
@@ -253,13 +251,10 @@ func (l *Log) WriteLog(c echo.Context) {
 			if err == io.EOF {
 				break
 			}
-
-			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
 			traces = append(traces, string(trace))
 		}
-		l.Context.SQLTrace = strings.Join(traces, "\n")
+		l.Context.SQLTrace = strings.Join(traces, "")
 	}
-
 	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
 }
 
