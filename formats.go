@@ -6,10 +6,11 @@ import (
 )
 
 const (
-	DateLayout8    = "20060102"
-	DateLayout10   = "2006-01-02"
-	DateLayout19   = "2006-01-02 15:04:05"
-	DateLayoutNano = time.RFC3339Nano
+	DateLayout8     = "20060102"
+	DateLayout10    = "2006-01-02"
+	DateLayout19    = "2006-01-02 15:04:05"
+	DateLayoutMilli = "2006-01-02T15:04:05.000Z07:00"
+	DateLayoutNano  = time.RFC3339Nano
 )
 
 func GetTimeLocation(region string) *time.Location {
@@ -29,6 +30,6 @@ func IsEmailFormat(email string) bool {
 	return matched
 }
 
-func GetDefaultLogLocalDateTimeNano() string {
-	return time.Now().In(GetAsiaSeoulTimeLocation()).Format(DateLayoutNano)
+func GetDefaultLogLocalDateTimeMilli() string {
+	return time.Now().In(GetAsiaSeoulTimeLocation()).Format(DateLayoutMilli)
 }

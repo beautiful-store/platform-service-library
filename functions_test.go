@@ -18,9 +18,3 @@ func TestContains(t *testing.T) {
 		t.Fatal(v, v2)
 	}
 }
-
-func TestGetDefaultLogLocalDateTimeNano(t *testing.T) {
-	if len(GetDefaultLogLocalDateTimeNano()) != 32 {
-		t.Error(GetDefaultLogLocalDateTimeNano())
-	}
-}

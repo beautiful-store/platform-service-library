@@ -12,3 +12,9 @@ func TestIsEmailFormat(t *testing.T) {
 		}
 	}
 }
+
+func TestGetDefaultLogLocalDateTimeMilli(t *testing.T) {
+	if len(GetDefaultLogLocalDateTimeMilli()) != 29 {
+		t.Error(GetDefaultLogLocalDateTimeMilli())
+	}
+}

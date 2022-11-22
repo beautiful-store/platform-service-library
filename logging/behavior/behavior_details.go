@@ -48,7 +48,7 @@ func ConvertLogSQLDetails(logID int64, s string) logSQLDetails {
 			sqlLevel := strings.TrimSpace(stack[fidx+1 : midx])
 			s := strings.TrimSpace(stack[midx+1 : lidx])
 			bidx := strings.LastIndex(s, " ")
-			sqlTime := s[:bidx]
+			sqlTime := strings.ReplaceAll(s[:bidx], "/", "-")
 			sql := strings.TrimSpace(stack[lidx+6:])
 
 			d := newLogSQLDetail(logID)

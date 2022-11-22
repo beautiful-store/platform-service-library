@@ -96,7 +96,7 @@ func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
-	l.Context.Timestamp = lib.GetDefaultLogLocalDateTimeNano()
+	l.Context.Timestamp = lib.GetDefaultLogLocalDateTimeMilli()
 	l.Context.StartTime = time.Now()
 
 	req := c.Request()
