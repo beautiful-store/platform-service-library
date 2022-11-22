@@ -1,13 +1,13 @@
 package behavior
 
 type logDetail struct {
-	ID    int64  `xorm:"id pk autoincr" json:"-"`
-	LogID int64  `json:"logID" xorm:"log_id"`
-	Level string `json:"level" xorm:"level"`
-	File  string `json:"file" xorm:"file"`
-	Func  string `json:"func" xorm:"func"`
-	Msg   string `json:"msg" xorm:"msg"`
-	Time  string `json:"time" xorm:"time"`
+	ID        int64  `xorm:"id pk autoincr" json:"-"`
+	LogID     int64  `json:"logID" xorm:"log_id"`
+	Level     string `json:"level" xorm:"level"`
+	File      string `json:"file" xorm:"file"`
+	Func      string `json:"func" xorm:"func"`
+	Msg       string `json:"msg" xorm:"msg"`
+	Timestamp string `json:"time" xorm:"timestamp"`
 }
 
 func (*logDetail) TableName() string {
@@ -22,13 +22,13 @@ func newLogDetail(logID int64) *logDetail {
 }
 
 type logSQLDetail struct {
-	ID    int64  `xorm:"id pk autoincr" json:"-"`
-	LogID int64  `json:"logID" xorm:"log_id"`
-	Level string `json:"level" xorm:"level"`
-	File  string `json:"file" xorm:"file"`
-	Func  string `json:"func" xorm:"func"`
-	Msg   string `json:"msg" xorm:"msg"`
-	Time  string `json:"time" xorm:"time"`
+	ID        int64  `xorm:"id pk autoincr" json:"-"`
+	LogID     int64  `json:"logID" xorm:"log_id"`
+	Level     string `json:"level" xorm:"level"`
+	File      string `json:"file" xorm:"file"`
+	Func      string `json:"func" xorm:"func"`
+	Msg       string `json:"msg" xorm:"msg"`
+	Timestamp string `json:"time" xorm:"timestamp"`
 }
 
 func (*logSQLDetail) TableName() string {

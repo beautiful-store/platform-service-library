@@ -2,7 +2,6 @@ package apicall
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/go-xorm/xorm"
 
@@ -29,7 +28,7 @@ func (a *APICall) CheckAndMakeTable(engine *xorm.Engine) {
 
 func (a *APICall) InsertTable(engine *xorm.Engine) error {
 	if a.Timestamp == "" {
-		a.Timestamp = time.Now().In(lib.GetAsiaSeoulTimeLocation()).Format(lib.DateLayout19)
+		a.Timestamp = lib.GetDefaultLogLocalDateTimeMilli()
 	}
 	if affected, err := engine.Insert(a); err != nil {
 		return err

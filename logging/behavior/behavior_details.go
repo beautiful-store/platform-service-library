@@ -53,7 +53,7 @@ func ConvertLogSQLDetails(logID int64, s string) logSQLDetails {
 
 			d := newLogSQLDetail(logID)
 			d.Level = sqlLevel
-			d.Time = sqlTime
+			d.Timestamp = sqlTime
 			d.Msg = sql
 
 			details = append(details, d)

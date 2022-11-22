@@ -107,8 +107,8 @@ func (l *Log) sqlCreateTableBehaviorLogDetail() string {
 		func          VARCHAR(1000) NOT NULL,
 		level         VARCHAR(20)   NOT NULL,
 		msg           TEXT          NOT NULL,
-		time         	VARCHAR(60)   NOT NULL,
-		created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		timestamp     VARCHAR(60)   NOT NULL,
+		created_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (id)
 	);`
 }
@@ -122,8 +122,8 @@ func (l *Log) sqlCreateTableBehaviorLogSQLDetail() string {
 		func          VARCHAR(1000) NOT NULL,
 		level         VARCHAR(20)   NOT NULL,
 		msg           TEXT          NOT NULL,
-		time         	VARCHAR(60)   NOT NULL,
-		created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		timestamp     VARCHAR(60)   NOT NULL,
+		created_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (id)
 	);`
 }
