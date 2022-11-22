@@ -35,6 +35,7 @@ func TestRepository(t *testing.T) {
 		Error:             "panic message",
 		Body:              "",
 		StackTrace:        "",
+		SQLTrace:          "",
 		Latency:           0,
 		MemberID:          0,
 		MemberOrgID:       0,

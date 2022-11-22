@@ -25,30 +25,13 @@ func (l *Log) CheckAndMakeTable(engine *xorm.Engine) {
 			if _, err := engine.Exec(sql); err != nil {
 				panic(err)
 			}
+			sql = l.sqlCreateTableBehaviorLogSQLDetail()
+			if _, err := engine.Exec(sql); err != nil {
+				panic(err)
+			}
 		}
 	}
 }
-
-// func (l *Log) CheckAndMakeTable(engine *xorm.Engine) error {
-// 	exist, err := engine.IsTableExist(l.Context.TableName())
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	if !exist {
-// 		sql := sqlCreateTableBehaviorLog()
-// 		if _, err = engine.Exec(sql); err != nil {
-// 			return err
-// 		}
-
-// 		dsql := sqlCreateTableBehaviorLogDetail()
-// 		if _, err = engine.Exec(dsql); err != nil {
-// 			return err
-// 		}
-// 	}
-
-// 	return nil
-// }
 
 func (l *Log) InsertTable(engine *xorm.Engine) error {
 	if affected, err := engine.Insert(l.Context); err != nil {
@@ -62,6 +45,14 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 		stacks := ConvertLogDetails(l.Context.ID, str)
 		if len(stacks) > 0 {
 			stacks.InsertTable(engine)
+		}
+	}
+
+	sql := l.Context.SQLTrace
+	if str != "" {
+		sqls := ConvertLogSQLDetails(l.Context.ID, sql)
+		if len(sqls) > 0 {
+			sqls.InsertTable(engine)
 		}
 	}
 
@@ -97,6 +88,7 @@ func (l *Log) sqlCreateTable() string {
 		panic		            TINYINT(1)    NOT NULL,
 		error		            VARCHAR(200)  NOT NULL,
 		stack_trace         TEXT          NOT NULL,
+    sql_trace           TEXT          NOT NULL,
 		latency             INT           NOT NULL,
 		member_id           INT           NOT NULL,
 		member_name         VARCHAR(200)  NOT NULL,
@@ -111,7 +103,21 @@ func (l *Log) sqlCreateTableBehaviorLogDetail() string {
 	(
 		id						INT           NOT NULL AUTO_INCREMENT,
 		log_id 				INT           NOT NULL,
-		db		        TINYINT(1)    NOT NULL,
+		file          VARCHAR(1000) NOT NULL,
+		func          VARCHAR(1000) NOT NULL,
+		level         VARCHAR(20)   NOT NULL,
+		msg           TEXT          NOT NULL,
+		time         	VARCHAR(60)   NOT NULL,
+		created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (id)
+	);`
+}
+
+func (l *Log) sqlCreateTableBehaviorLogSQLDetail() string {
+	return `CREATE TABLE IF NOT EXISTS behavior_log_sql_details
+	(
+		id						INT           NOT NULL AUTO_INCREMENT,
+		log_id 				INT           NOT NULL,
 		file          VARCHAR(1000) NOT NULL,
 		func          VARCHAR(1000) NOT NULL,
 		level         VARCHAR(20)   NOT NULL,

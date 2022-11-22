@@ -69,6 +69,7 @@ type logContext struct {
 	Error  string `json:"error" xorm:"error"`
 
 	StackTrace string `json:"stack_trace" xorm:"stack_trace"`
+	SQLTrace   string `json:"sql_trace" xorm:"sql_trace"`
 
 	Latency int64 `json:"latency" xorm:"latency"`
 
@@ -78,6 +79,7 @@ type logContext struct {
 
 	StartTime time.Time     `json:"-" xorm:"-"`
 	Stack     *bytes.Buffer `json:"-" xorm:"-"`
+	SQL       *bytes.Buffer `json:"-" xorm:"-"`
 }
 
 func (*logContext) TableName() string {
@@ -198,6 +200,12 @@ func (l *Log) WithStack(b *bytes.Buffer) *Log {
 	return l
 }
 
+func (l *Log) WithSQL(b *bytes.Buffer) *Log {
+	l.Context.SQL = b
+
+	return l
+}
+
 func (l *Log) WithEnv(env string) *Log {
 	l.Context.Env = env
 
@@ -262,7 +270,20 @@ func (l *Log) Write(c *echo.Context) {
 			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
 			traces = append(traces, string(trace))
 		}
-		l.Context.StackTrace = strings.Join(traces, "\n")
+		l.Context.StackTrace = strings.Join(traces, "")
+	}
+	if l.Context.SQL != nil {
+		var traces []string
+		for {
+			trace, err := l.Context.SQL.ReadBytes('\n')
+			if err == io.EOF {
+				break
+			}
+
+			// traces = append(traces, strings.Trim(string(trace), "\n\t"))
+			traces = append(traces, string(trace))
+		}
+		l.Context.SQLTrace = strings.Join(traces, "\n")
 	}
 
 	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
