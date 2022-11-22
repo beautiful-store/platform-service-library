@@ -35,7 +35,7 @@ func TestConvertLogSQLDetails(t *testing.T) {
 	}
 
 	logid := int64(999)
-	str := `[info]  2022/11/22 09:50:18.497341 session_raw.go:45: [SQL] SELECT unit, name, order_by, created, updated, del FROM units WHERE (del is null or del = 0)\\n\`
+	str := `[info]  2022/11/22 09:50:18.497341 session_raw.go:45: [SQL] SELECT * FROM table\\n\`
 	sqls := ConvertLogSQLDetails(logid, str)
 	if len(sqls) == 0 {
 		t.Error("converting error")
