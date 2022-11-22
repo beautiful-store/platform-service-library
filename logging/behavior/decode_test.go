@@ -7,7 +7,7 @@ import (
 func TestDecodeMessage(t *testing.T) {
 	l := logContext{ModuleName: "testModule",
 		TimeUnixNano:      1665620378841470000,
-		Timestamp:         "2022-10-13T09:19:38+09:00",
+		Timestamp:         "2006-01-02T15:04:05.999999999Z07:00",
 		ServiceID:         "",
 		ServiceName:       "UNKNOWN",
 		ParentServiceID:   "",

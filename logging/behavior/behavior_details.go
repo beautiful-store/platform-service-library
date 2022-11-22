@@ -17,10 +17,10 @@ func ConvertLogDetails(logID int64, s string) logDetails {
 
 	stacks := strings.Split(s, "\n")
 	if len(stacks) > 0 {
-		for i, stack := range stacks {
+		for _, stack := range stacks {
 			d := newLogDetail(logID)
 			if err := lib.String2Struct(stack, &d); err != nil {
-				fmt.Println(i, "**err:", err)
+				fmt.Println("[error]", err)
 				continue
 			}
 
@@ -49,7 +49,6 @@ func ConvertLogSQLDetails(logID int64, s string) logSQLDetails {
 			s := strings.TrimSpace(stack[midx+1 : lidx])
 			bidx := strings.LastIndex(s, " ")
 			sqlTime := s[:bidx]
-			// sqlTime := strings.Replace(strings.ReplaceAll(strings.TrimSpace(stack[midx+1 : lidx])[:26], "/", "-"), " ", "T", 10)
 			sql := strings.TrimSpace(stack[lidx+6:])
 
 			d := newLogSQLDetail(logID)
@@ -67,13 +66,10 @@ func ConvertLogSQLDetails(logID int64, s string) logSQLDetails {
 func (stacks logDetails) InsertTable(engine *xorm.Engine) {
 	for i, stack := range stacks {
 		if affected, err := engine.Insert(stack); err != nil {
-			fmt.Println(i, "**stack:", *stack)
-			fmt.Println(i, "**err:", err)
-			// return err
+			fmt.Println("[error]", err, "/n", *stack)
 			continue
 		} else if affected != 1 {
-			fmt.Println(i, "**err affected rows:", affected)
-			// return fmt.Errorf(fmt.Sprintf("affected rows can't be %d", affected))
+			fmt.Println(i, "[error]affected rows:", affected)
 			continue
 		}
 	}
@@ -82,13 +78,10 @@ func (stacks logDetails) InsertTable(engine *xorm.Engine) {
 func (sqls logSQLDetails) InsertTable(engine *xorm.Engine) {
 	for i, stack := range sqls {
 		if affected, err := engine.Insert(stack); err != nil {
-			fmt.Println(i, "**stack:", *stack)
-			fmt.Println(i, "**err:", err)
-			// return err
+			fmt.Println("[error]", err, "/n", *stack)
 			continue
 		} else if affected != 1 {
-			fmt.Println(i, "**err affected rows:", affected)
-			// return fmt.Errorf(fmt.Sprintf("affected rows can't be %d", affected))
+			fmt.Println(i, "[error]affected rows:", affected)
 			continue
 		}
 	}

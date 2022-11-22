@@ -20,10 +20,6 @@ import (
 	"github.com/beautiful-store/platform-service-library/aws/sns"
 )
 
-var (
-	layout = time.RFC3339Nano
-)
-
 const (
 	HeaderXRequestID    = "X-Request-ID"
 	HeaderXActionID     = "X-Action-ID"
@@ -100,7 +96,7 @@ func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
-	l.Context.Timestamp = l.GetDefaultLocalDateTimeNano()
+	l.Context.Timestamp = lib.GetDefaultLogLocalDateTimeNano()
 	l.Context.StartTime = time.Now()
 
 	req := c.Request()
@@ -311,10 +307,6 @@ func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
 	}
 
 	return nil
-}
-
-func (l *Log) GetDefaultLocalDateTimeNano() string {
-	return time.Now().In(lib.GetAsiaSeoulTimeLocation()).Format(layout)
 }
 
 func newLogContext(moduleName string) *logContext {

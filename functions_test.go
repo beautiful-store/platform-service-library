@@ -1,6 +1,8 @@
 package library
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestContains(t *testing.T) {
 	v := []string{"a", "b", "c"}
@@ -14,5 +16,11 @@ func TestContains(t *testing.T) {
 	boolean2 := Contains(v, v2)
 	if !boolean2 {
 		t.Fatal(v, v2)
+	}
+}
+
+func TestGetDefaultLogLocalDateTimeNano(t *testing.T) {
+	if len(GetDefaultLogLocalDateTimeNano()) != 32 {
+		t.Error(GetDefaultLogLocalDateTimeNano())
 	}
 }

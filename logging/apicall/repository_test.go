@@ -12,10 +12,9 @@ import (
 )
 
 func TestRepository(t *testing.T) {
-	driver := os.Getenv("LOG_DB_DRIVER")
-	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOG_DB_USER"), os.Getenv("LOG_DB_PASSWORD"), os.Getenv("LOG_DB_CONNECTION"))
+	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOCAL_DB_USER"), os.Getenv("LOCAL_DB_PASSWORD"), os.Getenv("LOCAL_MYSQL"))
 
-	engine, err := xorm.NewEngine(driver, dbConnection)
+	engine, err := xorm.NewEngine("mysql", dbConnection)
 	if err != nil {
 		panic(fmt.Errorf("database open error: error: %s", err))
 	}
@@ -23,7 +22,7 @@ func TestRepository(t *testing.T) {
 	log := APICall{
 		Env:        "test",
 		ModuleName: "TEST",
-		Timestamp:  time.Now().Format(lib.DateLayout19),
+		Timestamp:  time.Now().Format(lib.DateLayoutNano),
 		LogType:    InternalShaingAPI.String(),
 		FullURL:    "https://www.daum.net",
 		Request:    `{}`,
