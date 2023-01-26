@@ -12,7 +12,7 @@ const (
 	LogIn    sendTypeEnum = 2 // 사용자 로그인
 )
 
-var sendTypeEnumValues = [...]string{"Behavior", "APICall"}
+var sendTypeEnumValues = [...]string{"Behavior", "APICall", "LogIn"}
 
 func (s sendTypeEnum) String() string {
 	switch {
