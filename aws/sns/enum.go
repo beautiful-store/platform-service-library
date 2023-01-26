@@ -7,8 +7,9 @@ import (
 type sendTypeEnum int // API 유형
 
 const (
-	Behavior sendTypeEnum = 0 // 내부 api 콜
+	Behavior sendTypeEnum = 0 // api service access log
 	APICall  sendTypeEnum = 1 // 내부 api 콜
+	LogIn    sendTypeEnum = 2 // 사용자 로그인
 )
 
 var sendTypeEnumValues = [...]string{"Behavior", "APICall"}
