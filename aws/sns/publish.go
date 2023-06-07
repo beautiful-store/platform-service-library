@@ -47,27 +47,12 @@ func (s *awssns) WithTopic(topic string) *awssns {
 func (s *awssns) Send(snsType string, snsMessage interface{}) (*string, error) {
 	var messageID *string
 
-<<<<<<< HEAD:aws/sns/publish.go
 	if snsType == "" {
 		return messageID, errors.New("There is no sns type")
 	}
 	if snsMessage == nil {
 		return messageID, errors.New("There is no sns message")
 	}
-=======
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println("1************")
-		}
-
-		fmt.Println("2************")
-		fmt.Println("*****", message)
-		fmt.Println("3************")
-
-		return
-	}()
-
->>>>>>> 60ab1ab (#221020):aws/sns.go
 	if s == nil || s.client == nil {
 		return messageID, errors.New("can't fild aws sns or client")
 	}
