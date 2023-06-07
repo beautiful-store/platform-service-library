@@ -251,6 +251,9 @@ func (l *Log) WriteLog(c echo.Context) {
 		l.Context.SQLTrace = strings.Join(traces, "")
 	}
 	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
+
+	l.Context.Stack.Reset()
+	l.Context.SQL.Reset()
 }
 
 func (l *Log) Write(c *echo.Context) {
@@ -294,6 +297,9 @@ func (l *Log) Write(c *echo.Context) {
 	}
 
 	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
+
+	l.Context.Stack.Reset()
+	l.Context.SQL.Reset()
 }
 
 func (l *Log) OutToConsole() {
