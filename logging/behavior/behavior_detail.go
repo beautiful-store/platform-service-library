@@ -3,6 +3,7 @@ package behavior
 type logDetail struct {
 	ID        int64  `xorm:"id pk autoincr" json:"-"`
 	LogID     int64  `json:"logID" xorm:"log_id"`
+	ServiceID string `json:"serviceID" xorm:"service_id"`
 	Level     string `json:"level" xorm:"level"`
 	File      string `json:"file" xorm:"file"`
 	Func      string `json:"func" xorm:"func"`
@@ -24,6 +25,7 @@ func newLogDetail(logID int64) *logDetail {
 type logSQLDetail struct {
 	ID        int64  `xorm:"id pk autoincr" json:"-"`
 	LogID     int64  `json:"logID" xorm:"log_id"`
+	ServiceID string `json:"serviceID" xorm:"service_id"`
 	Level     string `json:"level" xorm:"level"`
 	File      string `json:"file" xorm:"file"`
 	Func      string `json:"func" xorm:"func"`
