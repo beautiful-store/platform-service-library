@@ -54,7 +54,7 @@ func (s *awssns) Send(snsType string, snsMessage interface{}) (*string, error) {
 		return messageID, errors.New("There is no sns message")
 	}
 	if s == nil || s.client == nil {
-		return messageID, errors.New("can't fild aws sns or client")
+		return messageID, errors.New("can't find aws sns or client")
 	}
 	if len(s.topic) == 0 {
 		return messageID, errors.New("can't find the topic")
