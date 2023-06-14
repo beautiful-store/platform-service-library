@@ -26,6 +26,7 @@ const (
 	HeaderXForwardedFor = "X-Forwarded-For"
 	HeaderXRealIP       = "X-Real-IP"
 	HeaderContentLength = "Content-Length"
+	HeaderTraceID       = "trace-id"
 )
 
 type Log struct {
@@ -102,7 +103,11 @@ func (l *Log) Begin(c echo.Context) {
 	req := c.Request()
 
 	serviceID := c.Response().Header().Get(echo.HeaderXRequestID)
-	traceID := serviceID
+	traceID := c.Request().Header.Get(HeaderTraceID)
+	if traceID == "" {
+		traceID = serviceID
+	}
+
 	serviceName := "UNKNOWN"
 	for _, r := range c.Echo().Routes() {
 		if r.Method == req.Method && r.Path == c.Path() {
