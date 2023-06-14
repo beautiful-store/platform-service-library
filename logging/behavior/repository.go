@@ -103,6 +103,7 @@ func (l *Log) sqlCreateTableBehaviorLogDetail() string {
 	(
 		id						INT           NOT NULL AUTO_INCREMENT,
 		log_id 				INT           NOT NULL,
+		service_id 		VARCHAR(60)   NOT NULL default '',
 		file          VARCHAR(1000) NOT NULL,
 		func          VARCHAR(1000) NOT NULL,
 		level         VARCHAR(20)   NOT NULL,
@@ -119,6 +120,7 @@ func (l *Log) sqlCreateTableBehaviorLogSQLDetail() string {
 	(
 		id						INT           NOT NULL AUTO_INCREMENT,
 		log_id 				INT           NOT NULL,
+		service_id 		VARCHAR(60)   NOT NULL default '',
 		file          VARCHAR(1000) NOT NULL,
 		func          VARCHAR(1000) NOT NULL,
 		level         VARCHAR(20)   NOT NULL,
