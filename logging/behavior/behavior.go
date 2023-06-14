@@ -27,6 +27,7 @@ const (
 	HeaderXRealIP       = "X-Real-IP"
 	HeaderContentLength = "Content-Length"
 	HeaderTraceID       = "trace-id"
+	HeaderSpanID        = "span-id"
 )
 
 type Log struct {
@@ -88,12 +89,12 @@ func New(moduleName string) *Log {
 	}
 }
 
-func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
-	l.Context.ParentServiceID = serviceID
-	l.Context.ParentServiceName = serviceName
+// func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
+// 	l.Context.ParentServiceID = serviceID
+// 	l.Context.ParentServiceName = serviceName
 
-	return l
-}
+// 	return l
+// }
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
@@ -107,6 +108,7 @@ func (l *Log) Begin(c echo.Context) {
 	if traceID == "" {
 		traceID = serviceID
 	}
+	parentServiceID := c.Request().Header.Get(HeaderSpanID)
 
 	serviceName := "UNKNOWN"
 	for _, r := range c.Echo().Routes() {
@@ -163,6 +165,7 @@ func (l *Log) Begin(c echo.Context) {
 	requestDump, _ := httputil.DumpRequestOut(req, true)
 
 	l.Context.TraceID = traceID
+	l.Context.ParentServiceID = parentServiceID
 	l.Context.ServiceID = serviceID
 	l.Context.ServiceName = serviceName
 	l.Context.RemoteIP = realIP
@@ -257,8 +260,8 @@ func (l *Log) WriteLog(c echo.Context) {
 	}
 	l.Context.Latency = time.Since(l.Context.StartTime).Milliseconds()
 
-	l.Context.Stack.Reset()
-	l.Context.SQL.Reset()
+	// l.Context.Stack.Reset()
+	// l.Context.SQL.Reset()
 }
 
 func (l *Log) Write(c *echo.Context) {

@@ -40,7 +40,7 @@ func TestBehaviorWithParams(t *testing.T) {
 
 	log := New("testModule").
 		WithEnv("dev").
-		WithParentService("parentServiceID", "parentServiceName").
+		// WithParentService("parentServiceID", "parentServiceName").
 		WithMemberID(int64(1)).WithMemberName("member1").WithMemberOrgID(int64(1)).
 		WithStack(b)
 
