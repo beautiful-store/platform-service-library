@@ -26,8 +26,8 @@ const (
 	HeaderXForwardedFor = "X-Forwarded-For"
 	HeaderXRealIP       = "X-Real-IP"
 	HeaderContentLength = "Content-Length"
-	HeaderTraceID       = "trace-id"
-	HeaderSpanID        = "span-id"
+	HeaderTraceID       = "trace_id"
+	HeaderServiceID     = "service_id"
 )
 
 type Log struct {
@@ -108,7 +108,7 @@ func (l *Log) Begin(c echo.Context) {
 	if traceID == "" {
 		traceID = serviceID
 	}
-	parentServiceID := c.Request().Header.Get(HeaderSpanID)
+	parentServiceID := c.Request().Header.Get(HeaderServiceID)
 
 	serviceName := "UNKNOWN"
 	for _, r := range c.Echo().Routes() {
