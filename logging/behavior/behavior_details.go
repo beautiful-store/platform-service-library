@@ -44,7 +44,7 @@ func ConvertLogSQLDetails(logID int64, s string) logSQLDetails {
 			midx := strings.Index(stack, "]")
 			lidx := strings.Index(stack, "[SQL]")
 			if fidx < 0 || midx < 0 || lidx < 0 || len(stack) < lidx+6 {
-				if len(strings.TrimSpace(stack)) == 0 {
+				if fidx < 0 || midx < 0 || lidx < 0 {
 					continue
 				}
 				d.Msg = stack
