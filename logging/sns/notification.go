@@ -58,10 +58,8 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 		return err
 	}
 
-	fmt.Println("0**************", s.Type)
 	switch s.Type {
 	case sns.Behavior.String():
-		fmt.Println("1**************", s.Type)
 		log := behavior.DecodeMessage(s.Message)
 		if log == nil {
 			return errors.New("behavior : log message converting error")
@@ -70,6 +68,18 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 		if err := log.InsertTable(engine); err != nil {
 			return err
 		}
+	case sns.BehaviorDetail.String():
+		log := behavior.ConvertLogDetails(0, s.Message.(string))
+		if log == nil {
+			return errors.New("behavior : log message converting error")
+		}
+		log.InsertTable(engine)
+	case sns.BehaviorSql.String():
+		log := behavior.ConvertLogSQLDetails(0, s.Message.(string))
+		if log == nil {
+			return errors.New("behavior : log message converting error")
+		}
+		log.InsertTable(engine)
 	case sns.APICall.String():
 		fmt.Println("2**************", s.Type)
 		log := apicall.DecodeMessage(s.Message)
