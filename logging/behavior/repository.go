@@ -111,7 +111,8 @@ func (l *Log) sqlCreateTableBehaviorLogDetail() string {
 		timestamp     VARCHAR(60)   NOT NULL,
 		created_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (id desc),
-		key idx_behavior_logs_log_id(log_id desc)
+		key idx_behavior_log_details_log_id(log_id desc),
+		key idx_behavior_log_details_service_id(service_id asc)
 	);`
 }
 
@@ -128,6 +129,7 @@ func (l *Log) sqlCreateTableBehaviorLogSQLDetail() string {
 		timestamp     VARCHAR(60)   NOT NULL,
 		created_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (id desc),
-		key idx_behavior_logs_log_id(log_id desc)
+		key idx_behavior_log_sql_details_log_id(log_id desc),
+		key idx_behavior_log_sql_details_service_id(service_id asc)
 	);`
 }
