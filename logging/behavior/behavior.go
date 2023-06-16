@@ -103,7 +103,7 @@ func (l *Log) Begin(c echo.Context) {
 
 	req := c.Request()
 
-	serviceID := c.Response().Header().Get(echo.HeaderXRequestID)
+	serviceID := c.Request().Header.Get(echo.HeaderXRequestID)
 	traceID := c.Request().Header.Get(HeaderTraceID)
 	if traceID == "" {
 		traceID = serviceID
