@@ -11,6 +11,16 @@ import (
 type logDetails []*logDetail
 type logSQLDetails []*logSQLDetail
 
+func ConvertLogDetail(s string) *logDetail {
+	d := newLogDetail(0)
+	if err := lib.String2Struct(s, &d); err != nil {
+		fmt.Println("[error]", err)
+		return nil
+	}
+
+	return d
+}
+
 // revive:disable:unexported-return
 func ConvertLogDetails(logID int64, s string) logDetails {
 	details := make([]*logDetail, 0)
@@ -70,6 +80,14 @@ func ConvertLogSQLDetails(logID int64, s string) logSQLDetails {
 	}
 
 	return details
+}
+
+func (stack logDetail) InsertOne(engine *xorm.Engine) {
+	if affected, err := engine.Insert(stack); err != nil {
+		fmt.Println("[error]", err, "/n", stack)
+	} else if affected != 1 {
+		fmt.Println("[error]affected rows:", affected)
+	}
 }
 
 func (stacks logDetails) InsertTable(engine *xorm.Engine) {
