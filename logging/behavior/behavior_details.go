@@ -11,14 +11,27 @@ import (
 type logDetails []*logDetail
 type logSQLDetails []*logSQLDetail
 
-func ConvertLogDetail(s string) *logDetail {
-	d := newLogDetail(0)
-	if err := lib.String2Struct(s, &d); err != nil {
-		fmt.Println("[error]", err)
-		return nil
+func ConvertLogDetail(s string) logDetails {
+	details := make([]*logDetail, 0)
+
+	stacks := strings.Split(s, "\n")
+	if len(stacks) > 0 {
+		for i, stack := range stacks {
+			if stack == "" {
+				continue
+			}
+			d := newLogDetail(int64(i))
+			if err := lib.String2Struct(stack, &d); err != nil {
+				fmt.Println("[error]", err)
+				continue
+			}
+
+			fmt.Println("ok:", d)
+			details = append(details, d)
+		}
 	}
 
-	return d
+	return details
 }
 
 // revive:disable:unexported-return
@@ -28,6 +41,9 @@ func ConvertLogDetails(logID int64, s string) logDetails {
 	stacks := strings.Split(s, "\n")
 	if len(stacks) > 0 {
 		for _, stack := range stacks {
+			if stack == "" {
+				continue
+			}
 			d := newLogDetail(logID)
 			if err := lib.String2Struct(stack, &d); err != nil {
 				fmt.Println("[error]", err)
