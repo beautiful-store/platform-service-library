@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/random"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 
@@ -89,12 +90,9 @@ func New(moduleName string) *Log {
 	}
 }
 
-// func (l *Log) WithParentService(serviceID string, serviceName string) *Log {
-// 	l.Context.ParentServiceID = serviceID
-// 	l.Context.ParentServiceName = serviceName
-
-// 	return l
-// }
+func generator() string {
+	return random.String(32)
+}
 
 func (l *Log) Begin(c echo.Context) {
 	l.Context.TimeUnixNano = time.Now().UTC().UnixNano()
@@ -104,6 +102,9 @@ func (l *Log) Begin(c echo.Context) {
 	req := c.Request()
 
 	serviceID := c.Request().Header.Get(echo.HeaderXRequestID)
+	if serviceID == "" {
+		serviceID = generator()
+	}
 	traceID := c.Request().Header.Get(HeaderTraceID)
 	if traceID == "" {
 		traceID = serviceID
