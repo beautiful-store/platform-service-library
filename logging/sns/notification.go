@@ -73,7 +73,7 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 		if log == nil {
 			return errors.New("behavior : log message converting error")
 		}
-		log.InsertOne(engine)
+		log.InsertTable(engine)
 	case sns.BehaviorSql.String():
 		log := behavior.ConvertLogSQLDetails(0, s.Message.(string))
 		if log == nil {

@@ -39,6 +39,36 @@ func TestNewNotificationAddDB_Behavior(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 }
+
+func TestNewNotificationAddDB_BehaviorDetail(t *testing.T) {
+	body := `{
+		"Type" : "BehaviorDetail",
+		"MessageId" : "0000000-0000-0000-0000-000000000000",
+		"TopicArn" : "arn:aws:sns:region:000000000000:topic",
+		"Message" : "{\"file\":\"/Users/auth.go:01\",\"func\":\"member-platform-service/handlers.Auth.GetLoginInfo\",\"level\":\"trace\",\"msg\":\"\",\"service_id\":\"gt4s2Nabya36kF0aFBO8ZCs2y07RaXLp\",\"time\":\"2023-06-16T10:39:20.575527+09:00\"}",
+		"Timestamp" : "2022-10-21T04:54:41.207Z",
+		"SignatureVersion" : "1",
+		"Signature" : "signature",
+		"SigningCertURL" : "https://sns.region/SimpleNotificationService",
+		"UnsubscribeURL" : "https://sns.region/?"
+	}`
+
+	reqBody := bytes.NewBufferString(body)
+	req := httptest.NewRequest("post", "https://dev-share-service.beautiful0.org/api/logging", reqBody)
+
+	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOCAL_DB_USER"), os.Getenv("LOCAL_DB_PASSWORD"), os.Getenv("LOCAL_MYSQL"))
+	engine, err := xorm.NewEngine("mysql", dbConnection)
+	if err != nil {
+		panic(fmt.Errorf("database open error: error: %s", err))
+	}
+
+	n := NewNotification(req)
+	err = n.AddDB(engine)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+}
+
 func TestNewNotificationAddDB_Apicall(t *testing.T) {
 	body := `{
 		"Type" : "ApiCall",
