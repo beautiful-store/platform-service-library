@@ -27,8 +27,8 @@ const (
 	HeaderXForwardedFor = "X-Forwarded-For"
 	HeaderXRealIP       = "X-Real-IP"
 	HeaderContentLength = "Content-Length"
-	HeaderTraceID       = "trace_id"
-	HeaderServiceID     = "service_id"
+	HeaderTraceID       = "TraceID"
+	HeaderServiceID     = "ServiceID"
 )
 
 type Log struct {
