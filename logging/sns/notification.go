@@ -32,10 +32,10 @@ func NewNotification(req *http.Request) *notification {
 	b, _ := io.ReadAll(req.Body)
 	body := string(b)
 
-	return New(body)
+	return NewBody(body)
 }
 
-func New(body string) *notification {
+func NewBody(body string) *notification {
 	m := notification{}
 	if err := lib.Byte2Struct([]byte(body), &m); err != nil {
 		fmt.Println("Byte2Struct error=", err.Error())
@@ -83,17 +83,16 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 	case sns.BehaviorDetail.String():
 		logs := behavior.ConvertLogDetail(s.Message.(string))
 		if len(logs) == 0 {
-			return errors.New("behavior : log message converting error")
+			return errors.New("behavior details : log message converting error")
 		}
 		logs.InsertTable(engine)
 	case sns.BehaviorSql.String():
 		log := behavior.ConvertLogSQLDetails(0, s.Message.(string))
 		if log == nil {
-			return errors.New("behavior : log message converting error")
+			return errors.New("behavior SQL : log message converting error")
 		}
 		log.InsertTable(engine)
 	case sns.APICall.String():
-		fmt.Println("2**************", s.Type)
 		log := apicall.DecodeMessage(s.Message)
 		if log == nil {
 			return errors.New("apicall : log message converting error")
@@ -103,7 +102,6 @@ func (n *notification) AddDB(engine *xorm.Engine) error {
 			return err
 		}
 	case sns.LogIn.String():
-		fmt.Println("3**************", s.Type)
 		log := login.DecodeMessage(s.Message)
 		if log == nil {
 			return errors.New("login : log message converting error")
