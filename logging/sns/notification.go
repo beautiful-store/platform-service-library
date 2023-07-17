@@ -32,6 +32,22 @@ func NewNotification(req *http.Request) *notification {
 	b, _ := io.ReadAll(req.Body)
 	body := string(b)
 
+	return New(body)
+
+	// m := notification{}
+	// if err := lib.Byte2Struct([]byte(body), &m); err != nil {
+	// 	fmt.Println("Byte2Struct error=", err.Error())
+	// 	return nil
+	// } else if m.MessageID == "" {
+	// 	fmt.Println("messageID error=", "can't conver to notification")
+	// 	return nil
+	// }
+
+	// return &m
+}
+
+// revive:disable:unexported-return
+func New(body string) *notification {
 	m := notification{}
 	if err := lib.Byte2Struct([]byte(body), &m); err != nil {
 		fmt.Println("Byte2Struct error=", err.Error())
