@@ -48,6 +48,14 @@ func New(body string) *notification {
 	return &m
 }
 
+func NewMessage(message string) *notification {
+	m := notification{
+		Message: message,
+	}
+
+	return &m
+}
+
 func (n *notification) AddDB(engine *xorm.Engine) error {
 	if n == nil {
 		return errors.New("aws sns notification message is nil")
