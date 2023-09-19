@@ -49,6 +49,7 @@ func (a *Login) sqlCreateTable() string {
 		log_type      		VARCHAR(20)   NOT NULL,
 		member_id     		INT           NULL,
 		created_at        DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		PRIMARY KEY (id)
+		PRIMARY KEY (id),
+		INDEX idx_members_created_at (created_at DESC, member_id asc)
 	);`, a.TableName())
 }
