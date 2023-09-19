@@ -120,9 +120,7 @@ func (l *Log) Begin(c echo.Context) {
 	}
 
 	realIP := req.RemoteAddr
-	if ip := req.Header.Get(HeaderXForwardedFor); ip != "" {
-		realIP = strings.Split(ip, ", ")[0]
-	} else if ip := req.Header.Get(HeaderXRealIP); ip != "" {
+	if ip := req.Header.Get(HeaderXRealIP); ip != "" {
 		realIP = ip
 	} else {
 		realIP, _, _ = net.SplitHostPort(realIP)
