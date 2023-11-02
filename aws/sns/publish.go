@@ -24,17 +24,17 @@ type snsPublishAPI interface {
 		optFns ...func(*sns.Options)) (*sns.PublishOutput, error)
 }
 
-type awssns struct {
+type AWSSNS struct {
 	client *sns.Client
 	topic  string
 }
 
 // revive:disable:unexported-return
-func NewSNS(cfg aws.Config) *awssns {
-	return &awssns{client: sns.NewFromConfig(cfg)}
+func NewSNS(cfg aws.Config) *AWSSNS {
+	return &AWSSNS{client: sns.NewFromConfig(cfg)}
 }
 
-func (s *awssns) WithTopic(topic string) *awssns {
+func (s *AWSSNS) WithTopic(topic string) *AWSSNS {
 	if len(topic) == 0 {
 		fmt.Println("can't find the topic")
 		return nil
@@ -44,7 +44,7 @@ func (s *awssns) WithTopic(topic string) *awssns {
 	return s
 }
 
-func (s *awssns) Send(snsType string, snsMessage interface{}) (*string, error) {
+func (s *AWSSNS) Send(snsType string, snsMessage interface{}) (*string, error) {
 	var messageID *string
 
 	if snsType == "" {
