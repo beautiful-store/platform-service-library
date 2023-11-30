@@ -17,19 +17,21 @@ const (
 	KakaoFriendTalk       typeEnum = 7  // kakao 친구톡
 	ExternalCourierCU     typeEnum = 8  // 택배 CU API
 	ExternalCourierGS     typeEnum = 9  // 택배 GS API
-	BasecampHomepageApi   typeEnum = 10 // 베이스캠프 홈페이지용 수거 api
+	NiceAuth              typeEnum = 10 // 택배 GS API
+	BasecampHomepageApi   typeEnum = 11 // 베이스캠프 홈페이지용 수거 api
 )
 
 var apiCallTypeEnumValues = [...]string{
 	"InternalShaingAPI", "InternalOrgSharingAPI", "InternalTaggingAPI", "InternalMemberAPI", "InternalAccountAPI", // 내부프로젝트
 	"KakaoLogin", "KakaoBusinessTalk", "KakaoFriendTalk", // 카카오 관련
 	"ExternalCourierCU", "ExternalCourierGS", // 택배 관련
-	"BasecampHomepageApi",
+	"NiceAuth",            // 나이스인증 관련
+	"BasecampHomepageApi", // 베이스캠프 홈페이지용 수거 api
 }
 
 func (s typeEnum) String() string {
 	switch {
-	case int(s) <= 10:
+	case int(s) <= 11:
 		return apiCallTypeEnumValues[s]
 	default:
 		return fmt.Sprintf("%d", s)
