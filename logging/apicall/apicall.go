@@ -41,7 +41,7 @@ func (a *APICall) OutToSNS(cfg aws.Config, topic string) error {
 //   module_name   VARCHAR(60)   NOT NULL,
 //   timestamp     VARCHAR(60)   NOT NULL,
 //   log_type      VARCHAR(20)   NOT NULL,
-//   full_url      VARCHAR(200)  NOT NULL,
+//   full_url      VARCHAR(2000)  NOT NULL,
 //   request       JSON          NULL,
 //   response      JSON          NULL,
 //   error_msg     TEXT          NULL,

@@ -47,7 +47,7 @@ func (a *APICall) sqlCreateTable() string {
 		module_name   		VARCHAR(60)   NOT NULL,
 		timestamp     		VARCHAR(60)   NOT NULL,		
 		log_type      		VARCHAR(20)   NOT NULL,
-		full_url      		VARCHAR(200)  NOT NULL,
+		full_url      		VARCHAR(2000) NOT NULL,
 		request       		JSON          NULL,
 		response      		JSON          NULL,
 		error_msg     		TEXT          NULL,
