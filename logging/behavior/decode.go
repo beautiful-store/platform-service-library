@@ -1,6 +1,7 @@
 package behavior
 
 import (
+	"encoding/json"
 	"fmt"
 
 	lib "github.com/beautiful-store/platform-service-library"
@@ -9,13 +10,13 @@ import (
 func DecodeMessage(message interface{}) *Log {
 	c := logContext{}
 
-	s, ok := message.(string)
-	if !ok {
-		fmt.Println("Behavior DecodeMessage:", "not ok", "\n", message)
+	jsonData, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println("Behavior DecodeMessage:", "not ok", "\n", err, message)
 		return nil
 	}
-	err := lib.String2Struct(s, &c)
-	if err != nil {
+	// err := lib.String2Struct(s, &c)
+	if err := lib.Byte2Struct(jsonData, &c); err != nil {
 		fmt.Println("Behavior DecodeMessage:", err.Error(), "\n", message)
 		return nil
 	}

@@ -27,7 +27,7 @@ func TestNewNotificationAddDB_Behavior(t *testing.T) {
 	reqBody := bytes.NewBufferString(body)
 	req := httptest.NewRequest("post", "https://dev-share-service.beautiful0.org/api/logging", reqBody)
 
-	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOCAL_DB_USER"), os.Getenv("LOCAL_DB_PASSWORD"), os.Getenv("LOCAL_MYSQL"))
+	dbConnection := fmt.Sprintf("%s:%s%s", os.Getenv("LOCAL_DB_USER"), os.Getenv("LOCAL_DB_PASSWORD"), os.Getenv("LOG_DB_CONNECTION"))
 	engine, err := xorm.NewEngine("mysql", dbConnection)
 	if err != nil {
 		panic(fmt.Errorf("database open error: error: %s", err))

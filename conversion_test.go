@@ -150,6 +150,6 @@ func TestString2Struct(t *testing.T) {
 	}{}
 
 	if err := String2Struct(str, &v1); err != nil {
-		t.Errorf(err.Error())
+		t.Error(err.Error())
 	}
 }

@@ -33,7 +33,7 @@ func (a *APICall) InsertTable(engine *xorm.Engine) error {
 	if affected, err := engine.Insert(a); err != nil {
 		return err
 	} else if affected != 1 {
-		return fmt.Errorf(fmt.Sprintf("affected rows can't be %d", affected))
+		return fmt.Errorf("affected rows can't be %d", affected)
 	}
 
 	return nil
