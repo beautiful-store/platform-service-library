@@ -37,7 +37,7 @@ func (l *Log) InsertTable(engine *xorm.Engine) error {
 	if affected, err := engine.Insert(l.Context); err != nil {
 		return err
 	} else if affected != 1 {
-		return fmt.Errorf(fmt.Sprintf("affected rows can't be %d", affected))
+		return fmt.Errorf("affected rows can't be %d", affected)
 	}
 
 	str := l.Context.StackTrace

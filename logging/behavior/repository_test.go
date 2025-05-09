@@ -44,7 +44,7 @@ func TestRepository(t *testing.T) {
 
 	engine, err := xorm.NewEngine("mysql", dbConnection)
 	if err != nil {
-		panic(fmt.Errorf("database open error: error: %s", err))
+		panic(fmt.Errorf("database open error: error: %v", err))
 	}
 
 	log := DecodeMessage(l)
