@@ -19,7 +19,7 @@ func (*Login) TableName() string {
 }
 
 func (a *Login) OutToSNS(cfg aws.Config, topic string) error {
-	_, err := sns.NewSNS(cfg).WithTopic(topic).Send(sns.LogIn.String(), a)
+	_, err := sns.NewSNS(cfg).WithTopic(topic).Send2(sns.LogIn.String(), a)
 	if err != nil {
 		return err
 	}

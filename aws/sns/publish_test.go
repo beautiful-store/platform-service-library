@@ -25,11 +25,11 @@ func TestSendSNS(t *testing.T) {
 
 	sns := NewSNS(cfg).WithTopic(topic)
 
-	_, err = sns.Send(Behavior.String(), "this is test1111")
+	_, err = sns.Send2(Behavior.String(), "this is test1111")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	_, err = sns.Send(Behavior.String(), "this is test222")
+	_, err = sns.Send2(Behavior.String(), "this is test222")
 	if err != nil {
 		t.Fatal(err.Error())
 	}

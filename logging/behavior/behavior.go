@@ -314,7 +314,7 @@ func (l *Log) OutToConsole() {
 }
 
 func (l *Log) OutToSNS(cfg aws.Config, topic string) error {
-	_, err := sns.NewSNS(cfg).WithTopic(topic).Send(sns.Behavior.String(), l.Context)
+	_, err := sns.NewSNS(cfg).WithTopic(topic).Send2(sns.Behavior.String(), l.Context)
 	if err != nil {
 		return err
 	}
