@@ -26,7 +26,7 @@ func (*APICall) TableName() string {
 }
 
 func (a *APICall) OutToSNS(cfg aws.Config, topic string) error {
-	_, err := sns.NewSNS(cfg).WithTopic(topic).Send(sns.APICall.String(), a)
+	_, err := sns.NewSNS(cfg).WithTopic(topic).Send2(sns.APICall.String(), a)
 	if err != nil {
 		return err
 	}
