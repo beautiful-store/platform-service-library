@@ -3,17 +3,13 @@ package sns
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
-	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 
 	lib "github.com/beautiful-store/platform-service-library"
 )
-
-var registerFlagsOnce sync.Once
 
 type Message struct {
 	Type    string
@@ -81,30 +77,14 @@ func (s *AWSSNS) Send(snsType string, snsMessage interface{}) (*string, error) {
 	}
 	message := string(b)
 
-	var msgPtr, topicPtr *string
-
-	if flag.Lookup("t") == nil {
-		topicPtr = flag.String("t", s.topic, "")
-	} else {
-		topicPtr = &(s.topic)
-	}
-	if flag.Lookup("m") == nil {
-		msgPtr = flag.String("m", message, "")
-	} else {
-		msgPtr = &message
-	}
-
-	flag.Parse()
-
 	input := &sns.PublishInput{
-		Message:  msgPtr,
-		TopicArn: topicPtr,
+		Message:  &message,
+		TopicArn: &s.topic,
 	}
 
 	result, err := s.client.Publish(context.TODO(), input)
-
 	if err != nil {
-		return messageID, fmt.Errorf("got an error while publishing the message:%v", err)
+		return messageID, fmt.Errorf("got an error while publishing the message: %v", err)
 	}
 
 	return result.MessageId, nil
