@@ -8,7 +8,7 @@ import (
 
 	lib "github.com/beautiful-store/platform-service-library"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 func TestRepository(t *testing.T) {

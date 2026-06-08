@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 func TestConvertLogDetails(t *testing.T) {

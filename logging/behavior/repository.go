@@ -3,7 +3,7 @@ package behavior
 import (
 	"fmt"
 
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 func (l *Log) CheckTable(session *xorm.Engine) bool {

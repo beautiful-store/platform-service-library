@@ -11,7 +11,7 @@ import (
 	"github.com/beautiful-store/platform-service-library/logging/apicall"
 	"github.com/beautiful-store/platform-service-library/logging/behavior"
 	"github.com/beautiful-store/platform-service-library/logging/login"
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 type notification struct {

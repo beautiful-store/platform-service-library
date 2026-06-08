@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	lib "github.com/beautiful-store/platform-service-library"
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 type logDetails []*logDetail

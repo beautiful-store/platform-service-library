@@ -3,7 +3,7 @@ package login
 import (
 	"fmt"
 
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 
 	lib "github.com/beautiful-store/platform-service-library"
 )
